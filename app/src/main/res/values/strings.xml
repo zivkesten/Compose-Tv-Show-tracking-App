@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TrackShows</string>
+    <string name="menu_watchlist">watchlist</string>
+    <string name="menu_my_shows">my shows</string>
+    <string name="menu_discover">discover</string>
+    <string name="menu_statistics">statistics</string>
+    <string name="title_activity_main">TrackShows</string>
+</resources>
