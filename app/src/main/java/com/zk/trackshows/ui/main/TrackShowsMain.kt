@@ -14,9 +14,11 @@ import com.zk.trackshows.ui.navigation.BackDispatcherAmbient
 import com.zk.trackshows.ui.navigation.Navigator
 import com.zk.trackshows.ui.navigation.detinations.Actions
 import com.zk.trackshows.ui.navigation.detinations.Destinations
+import com.zk.trackshows.ui.search.SearchScreen
 
 @Composable
 fun TrackShowsMain(viewModel: MainViewModel, backDispatcher: OnBackPressedDispatcher) {
+
     val navigator: Navigator<Destinations> = rememberSavedInstanceState(
         saver = Navigator.saver(backDispatcher)
     ) {
@@ -44,7 +46,7 @@ fun TrackShowsMain(viewModel: MainViewModel, backDispatcher: OnBackPressedDispat
                 }
 
                 is Destinations.SearchScreen -> {
-                    WatchList(PaddingValues(), {})
+                    SearchScreen()
                 }
             }
         }

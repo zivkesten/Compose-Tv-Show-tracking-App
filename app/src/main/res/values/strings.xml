@@ -5,4 +5,5 @@
     <string name="menu_discover">discover</string>
     <string name="menu_statistics">statistics</string>
     <string name="title_activity_main">TrackShows</string>
+    <string name="details_route">TrackShows</string>
 </resources>

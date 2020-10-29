@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             TrackShowsTheme() {
                 TrackShowsMain(
                     viewModel = viewModel,
-                    backDispatcher = onBackPressedDispatcher
                 )
             }
         }
