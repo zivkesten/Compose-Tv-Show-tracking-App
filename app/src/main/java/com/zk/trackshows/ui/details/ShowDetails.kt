@@ -12,12 +12,11 @@ import com.zk.trackshows.ui.main.MainViewModel
 
 @Composable
 fun ShowDetails(
-    viewModel: MainViewModel,
-    pressOnBack: () -> Unit
+    viewModel: MainViewModel
 ) {
-    val details: Show? by viewModel.showDetails.observeAsState()
-    details?.let {
-        Log.d("Zivi", "detailesScreen")
-        NetworkImageComponentPicasso(url = it.poster_path, modifier = Modifier.fillMaxSize())
-    }
+//    val details: Show? by viewModel.showDetails.observeAsState()
+//    details?.let {
+//        Log.d("Zivi", "detailesScreen")
+//        NetworkImageComponentPicasso(url = it.poster_path, modifier = Modifier.fillMaxSize())
+//    }
 }

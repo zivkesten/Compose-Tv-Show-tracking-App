@@ -15,19 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.zk.trackshows.components.HorizontalScrollableComponent
 import com.zk.trackshows.extensions.whenNotNull
 import com.zk.trackshows.model.Show
 
 @Composable
-fun MyShows(padding: PaddingValues, selectShow: (Int) -> Unit) {
+fun MyShows(navController: NavController, selectShow: (Int) -> Unit) {
     val shows = popularShowsGenerator(showJson())?.shows
     ScrollableColumn {
         Column(modifier = Modifier
-            .padding(padding = padding)
-            .then(Modifier
                 .padding(16.dp)
-            )
         ) {
             HorizontalList("Title 1", Icons.Outlined.AddBox, shows, selectShow)
             HorizontalList("Title 2", Icons.Outlined.BabyChangingStation, shows, selectShow)

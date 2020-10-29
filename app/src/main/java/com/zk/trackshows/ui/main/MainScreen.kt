@@ -1,67 +1,92 @@
 package com.zk.trackshows.ui.main
 
+import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Icon
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.*
 import com.zk.trackshows.R
-import com.zk.trackshows.components.BottomNavigationOnlySelectedLabelComponent
 import com.zk.trackshows.ui.mainScreens.DiscoverScreen
 import com.zk.trackshows.ui.mainScreens.MyShows
 import com.zk.trackshows.ui.mainScreens.WatchList
 
+sealed class BottomNavigationScreens(val route: String, @StringRes val resourceId: Int) {
+    object WatchList : BottomNavigationScreens("watchList", R.string.watchlist_route)
+    object MyShows : BottomNavigationScreens("myShows", R.string.my_shows_screen_route)
+    object Discover : BottomNavigationScreens("discover", R.string.discover_screen_route)
+    object Statistics : BottomNavigationScreens("statistics", R.string.statistics_screen_route)
+}
+
+@ExperimentalAnimationApi
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel,
-    selectShow: (Int) -> Unit,
-    tapSearch: () -> Unit,
-    selectedNavigationItem: NavigationItems,
-    setSelectedNavigationItem: (NavigationItems) -> Unit
-) {
-    val fabShape = RoundedCornerShape(50)
-    Scaffold(
-        topBar = {
-            TopAppBar( title = {
-                Text("Michelle's movie app", fontFamily = FontFamily.Serif)
-            }, actions = {
-                Icon(Icons.Default.Search, modifier = Modifier.padding(8.dp))
-                Icon(Icons.Default.Sort, modifier = Modifier.padding(8.dp))
-                Icon(Icons.Default.Settings, modifier = Modifier.padding(8.dp))
-            }, backgroundColor = Color.Transparent
-            )
-        },
+fun MainScreen(viewModel: MainViewModel,
+               selectShow: (Int) -> Unit,
+                tapSearch: () -> Unit)
+{
+    val navController = rememberNavController()
+    val items = listOf(
+        BottomNavigationScreens.WatchList,
+        BottomNavigationScreens.MyShows,
+        BottomNavigationScreens.Discover,
+        BottomNavigationScreens.Statistics
+    )
+    Scaffold(topBar = {
+        TopAppBar(title = {
+            Text("Michelle's movie app", fontFamily = FontFamily.Serif)
+        }, actions = {
+            Icon(Icons.Default.Search, modifier = Modifier.padding(8.dp))
+            Icon(Icons.Default.Sort, modifier = Modifier.padding(8.dp))
+            Icon(Icons.Default.Settings, modifier = Modifier.padding(8.dp))
+        }, backgroundColor = Color.Transparent
+        )
+    },
         bottomBar = {
-            // We specify the shape of the FAB bu passing a shape composable (fabShape) as a
-            // parameter to cutoutShape property of the BottomAppBar. It automatically creates a
-            // cutout in the BottomAppBar based on the shape of the Floating Action Button.
-            BottomAppBar(modifier = Modifier.fillMaxWidth()) {
-                BottomNavigationOnlySelectedLabelComponent(
-                    selectedNavigationItem,
-                    setSelectedNavigationItem
-                )
+            BottomNavigation {
+                val currentRoute = currentRoute(navController, KEY_ROUTE)
+                items.forEach { screen ->
+                    BottomNavigationItem(
+                        icon = {
+                            when (screen) {
+                                is BottomNavigationScreens.WatchList -> Icon(Icons.Filled.Terrain)
+                                is BottomNavigationScreens.MyShows -> Icon(Icons.Filled.Satellite)
+                                is BottomNavigationScreens.Discover -> Icon(Icons.Filled.LocalSee)
+                                is BottomNavigationScreens.Statistics -> Icon(Icons.Filled.ChargingStation)
+                            }
+                        },
+                        label = { Text(stringResource(id = screen.resourceId)) },
+                        selected = currentRoute == screen.route,
+                        alwaysShowLabels = false,
+                        onClick = {
+                            // This if check gives us a "singleTop" behavior where we do not create a
+                            // second instance of the composable if we are already on that destination
+                            if (currentRoute != screen.route) {
+                                Log.d("Zivi", "navigate to: ${screen.route}")
+                                navController.navigate(screen.route)
+                            }
+                        }
+                    )
+                }
             }
-        },
-        floatingActionButton = {
+        }, floatingActionButton = {
+            val currentRoute = currentRoute(navController, KEY_ROUTE)
             // Only Watchlist screen should include FAB
-            if (selectedNavigationItem == NavigationItems.WATCHLIST) {
+            val isWatchList = currentRoute == BottomNavigationScreens.WatchList.route
+            AnimatedVisibility(visible = isWatchList) {
                 FloatingActionButton(
                     onClick = {},
-                    // We specify the same shape that we passed as the cutoutShape above.
-                    shape = fabShape,
-                    // We use the secondary color from the current theme. It uses the defaults when
-                    // you don't specify a theme (this example doesn't specify a theme either hence
-                    // it will just use defaults. Look at DarkModeActivity if you want to see an
-                    // example of using themes.
                     backgroundColor = MaterialTheme.colors.primary
                 ) {
                     IconButton(onClick = {}) {
@@ -69,26 +94,43 @@ fun MainScreen(
                     }
                 }
             }
-
         },
-        floatingActionButtonPosition = FabPosition.End,
-        bodyContent = { padding ->
-            when (selectedNavigationItem) {
-                NavigationItems.WATCHLIST -> WatchList(padding = padding, selectShow = selectShow)
-                NavigationItems.MY_SHOWS -> MyShows(padding = padding, selectShow = selectShow)
-                NavigationItems.DISCOVER -> DiscoverScreen(padding = padding, selectShow = selectShow, tapSearch = tapSearch)
+        floatingActionButtonPosition = FabPosition.End
+    ) {
+        NavHost(navController, startDestination = BottomNavigationScreens.WatchList.route) {
+            composable(BottomNavigationScreens.WatchList.route) {
+                WatchList(
+                    navController,
+                    selectShow
+                )
+            }
+            composable(BottomNavigationScreens.MyShows.route) {
+                MyShows(
+                    navController,
+                    selectShow)
+            }
+            composable(BottomNavigationScreens.Discover.route) {
+                DiscoverScreen(
+                    navController,
+                    selectShow,
+                    tapSearch
+                )
+            }
+            composable(BottomNavigationScreens.Statistics.route) {
+                WatchList(
+                    navController,
+                    { }
+                )
             }
         }
-    )
+    }
 }
 
-enum class NavigationItems(
-    @StringRes val title: Int,
-    val icon: VectorAsset
-) {
-    WATCHLIST(R.string.menu_watchlist, Icons.Filled.Home),
-    MY_SHOWS(R.string.menu_my_shows, Icons.Filled.Radio),
-    DISCOVER(R.string.menu_discover, Icons.Filled.LibraryAdd),
-    STATISTICS(R.string.menu_statistics, Icons.Filled.Gamepad),
+@Composable
+private fun currentRoute(
+    navController: NavHostController,
+    routeKey: String
+): String? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    return navBackStackEntry?.arguments?.getString(routeKey)
 }
-

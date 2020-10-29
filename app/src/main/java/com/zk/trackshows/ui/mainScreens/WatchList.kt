@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.zk.trackshows.components.ShowCard
 import com.zk.trackshows.model.PopularShows
@@ -18,14 +19,14 @@ public fun popularShowsGenerator(json: String): PopularShows? {
 }
 
 @Composable
-fun WatchList(padding: PaddingValues, selectShow: (Int) -> Unit) {
+fun WatchList(navController: NavController, selectShow: (Int) -> Unit) {
     val shows = popularShowsGenerator(showJson())?.shows
     // ScrollableColumn is a composable that adds the ability to scroll through the
     // child views
     ScrollableColumn {
         // Column is a composable that places its children in a vertical sequence. You
         // can think of it similar to a LinearLayout with the vertical orientation.
-        Column(Modifier.padding(padding)) {
+        Column() {
             shows?.forEachIndexed { index, show ->
                 // Card composable is a predefined composable that is meant to represent
                 // the card surface as specified by the Material Design specification. We

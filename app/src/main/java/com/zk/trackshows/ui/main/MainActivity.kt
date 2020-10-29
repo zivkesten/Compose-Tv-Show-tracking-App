@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Text
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     @VisibleForTesting
     val viewModel = MainViewModel()
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,11 +34,9 @@ class MainActivity : AppCompatActivity() {
         // set disney contents.
         setContent {
             TrackShowsTheme() {
-                TrackShowsMain(
-                    viewModel = viewModel,
-                    backDispatcher = onBackPressedDispatcher
-                )
+               MainScreen(viewModel = viewModel, selectShow = {}, tapSearch = {})
             }
         }
+
     }
 }

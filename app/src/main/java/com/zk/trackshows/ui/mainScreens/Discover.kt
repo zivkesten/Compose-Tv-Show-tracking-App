@@ -17,19 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun DiscoverScreen(padding: PaddingValues, selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
+fun DiscoverScreen(navController: NavController, selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
 
     val shows = popularShowsGenerator(showJson())?.shows
     ScrollableColumn {
         Column(
             modifier = Modifier
-                .padding(padding = padding)
-                .then(
-                    Modifier
-                        .padding(16.dp)
-                )
+                .padding(16.dp)
         ) {
             SearchBox(tapSearch = tapSearch)
             Spacer(modifier = Modifier.height(16.dp))

@@ -5,5 +5,12 @@
     <string name="menu_discover">discover</string>
     <string name="menu_statistics">statistics</string>
     <string name="title_activity_main">TrackShows</string>
-    <string name="details_route">TrackShows</string>
+    <string name="watchlist_route">Watchlist</string>
+    <string name="my_shows_screen_route">My Shows</string>
+    <string name="discover_screen_route">Discover</string>
+    <string name="statistics_screen_route">Statistics</string>
+    <string name="details_screen_route">detailsScreen</string>
+    <string name="search_screen_route">searchScreen</string>
+    <string name="main_screen_route">mainScreen</string>
+
 </resources>

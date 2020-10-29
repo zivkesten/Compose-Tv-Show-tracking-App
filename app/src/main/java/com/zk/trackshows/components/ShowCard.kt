@@ -1,12 +1,11 @@
 package com.zk.trackshows.components
 
+import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,8 +59,8 @@ fun ShowCard(show: Show, modifier: Modifier) {
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
+
                 Button(
-                        elevation = 5.dp,
                         onClick = {}) {
                     Text(text = "Episode Info")
                 }
