@@ -5,8 +5,10 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.zk.trackshows.AnimatedBottomNavigationTransition
+import com.zk.trackshows.bottomNavigationEnterTransitions
+import com.zk.trackshows.bottomNavigationExitTransitions
 import com.zk.trackshows.components.ShowCard
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,20 +18,11 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
-
 fun WatchList(viewModel: MainViewModel) {
-    AnimatedVisibility(
-            visible = true,
-            enter = slideInVertically(
-                    // Start the slide from 40 (pixels) above where the content is supposed to go, to
-                    // produce a parallax effect
-                    initialOffsetY = { -40 }
-            ) + expandVertically(
-                    expandFrom = Alignment.Top
-            ) + fadeIn(initialAlpha = 0.3f),
-            exit = slideOutVertically() + shrinkVertically() + fadeOut()
+    AnimatedBottomNavigationTransition(
+        enter = bottomNavigationEnterTransitions(),
+        exit = bottomNavigationExitTransitions()
     ) {
-        // Content that needs to appear/disappear goes here:
         WatchListContent(viewModel)
     }
 }

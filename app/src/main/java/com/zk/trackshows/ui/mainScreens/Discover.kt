@@ -1,9 +1,12 @@
 package com.zk.trackshows.ui.mainScreens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fireplace
 import androidx.compose.material.icons.filled.Satellite
@@ -19,9 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.repository.popularShowsGenerator
 import com.zk.trackshows.repository.showJson
+import com.zk.trackshows.ui.main.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @Composable
-fun DiscoverScreen(selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
+fun DiscoverScreen(viewModel: MainViewModel) {
 
     val shows = popularShowsGenerator(showJson())?.shows
     ScrollableColumn {
@@ -29,13 +37,13 @@ fun DiscoverScreen(selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            SearchBox(tapSearch = tapSearch)
+            SearchBox(tapSearch = {  })
             Spacer(modifier = Modifier.height(16.dp))
-            HorizontalList("Trending now", Icons.Filled.Fireplace, shows, selectShow)
-            HorizontalList("Returning this wee", Icons.Filled.Satellite, shows, selectShow)
-            HorizontalList(icon = Icons.Outlined.Cake, shows = shows, selectShow = selectShow)
-            HorizontalList(shows = shows, selectShow = selectShow)
-            HorizontalList(icon = Icons.Outlined.Gamepad, shows = shows, selectShow = selectShow)
+            HorizontalList("Trending now", Icons.Filled.Fireplace, shows, viewModel)
+            HorizontalList("Returning this wee", Icons.Filled.Satellite, shows, viewModel)
+            HorizontalList(icon = Icons.Outlined.Cake, shows = shows, viewModel = viewModel)
+            HorizontalList(shows = shows, viewModel = viewModel)
+            HorizontalList(icon = Icons.Outlined.Gamepad, shows = shows, viewModel = viewModel)
         }
     }
 }

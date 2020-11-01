@@ -1,6 +1,5 @@
 package com.zk.trackshows.components
 
-import android.util.Log
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -12,9 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zk.trackshows.model.Show
+import com.zk.trackshows.ui.main.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @Composable
-fun HorizontalScrollableComponent(showList: List<Show>, selectShow: (Int) -> Unit) {
+fun HorizontalScrollableComponent(showList: List<Show>, viewModel: MainViewModel) {
     // HorizontalScroller is a composable that adds the ability to scroll through the child
     // composables that are declared inside it in the horizontal direction. One caveat here is that
     // this is not optimized to recycle the views. It is more similar to [ScrollView] and should not
@@ -29,7 +33,7 @@ fun HorizontalScrollableComponent(showList: List<Show>, selectShow: (Int) -> Uni
         Row {
             // We iterate over each item from the personList and define what each item should
             // look like.
-            for ((index, show) in showList.withIndex()) {
+            showList.forEach {show ->
                 // Card composable is a predefined composable that is meant to represent the card
                 // surface as specified by the Material Design specification. We also configure it
                 // to have rounded corners and apply a modifier.
@@ -40,7 +44,7 @@ fun HorizontalScrollableComponent(showList: List<Show>, selectShow: (Int) -> Uni
                 Card(
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.padding(16.dp)
-                        .clickable(onClick = { selectShow(show.id) })
+                        .clickable(onClick = { viewModel.tapShowEvent(showId = show.id) })
                 ) {
                     // The Text composable is pre-defined by the Compose UI library; you can use this
                     // composable to render text on the screen

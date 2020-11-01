@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.zk.trackshows.R
 import com.zk.trackshows.ui.details.ShowDetails
@@ -24,22 +23,23 @@ sealed class AppScreens(val route: String, @StringRes val resourceId: Int) {
 @Composable
 fun TrackShowsApp(viewModel: MainViewModel) {
     val navController = rememberNavController()
+    navigationConfigurations(navController, viewModel, initialScreen = AppScreens.Main.route) // Declare the navigation flows
+    handleNavigationActions(viewModel, navController) // Act on navigation actions flow
+}
 
-    handleNavigation(viewModel, navController)
+@ExperimentalCoroutinesApi
+@FlowPreview
+@ExperimentalAnimationApi
+@Composable
+private fun navigationConfigurations(
 
-    NavHost(navController, startDestination = AppScreens.Main.route) {
+    navController: NavHostController,
+    viewModel: MainViewModel,
+    initialScreen: String,
+) {
+    NavHost(navController, startDestination = initialScreen) {
         composable(AppScreens.Main.route) {
-            MainScreen(
-                    viewModel,
-                    { navController.navigate(AppScreens.Details.route) },
-                    { navController.navigate(AppScreens.Search.route) }
-            )
-        }
-        composable(
-                AppScreens.Details.route + "/{showId}",
-                arguments = listOf(navArgument("showId") { type = NavType.IntType })
-        ) {
-
+            MainScreen(viewModel)
         }
         composable(AppScreens.Details.route) {
             ShowDetails(viewModel)
@@ -53,7 +53,7 @@ fun TrackShowsApp(viewModel: MainViewModel) {
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Composable
-private fun handleNavigation(viewModel: MainViewModel, navController: NavHostController) {
+private fun handleNavigationActions(viewModel: MainViewModel, navController: NavHostController) {
     CoroutineScope(Dispatchers.Main).launch {
         viewModel.navigateTo.collect {
             navController.navigate(it.route)
