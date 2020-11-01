@@ -19,10 +19,11 @@ import androidx.navigation.NavController
 import com.zk.trackshows.components.HorizontalScrollableComponent
 import com.zk.trackshows.extensions.whenNotNull
 import com.zk.trackshows.model.Show
+import com.zk.trackshows.repository.mockShows
 
 @Composable
 fun MyShows(navController: NavController, selectShow: (Int) -> Unit) {
-    val shows = popularShowsGenerator(showJson())?.shows
+    val shows = mockShows()
     ScrollableColumn {
         Column(modifier = Modifier
                 .padding(16.dp)

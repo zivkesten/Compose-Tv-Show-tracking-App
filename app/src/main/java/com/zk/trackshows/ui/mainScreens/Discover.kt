@@ -17,10 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.zk.trackshows.repository.popularShowsGenerator
+import com.zk.trackshows.repository.showJson
 
 @Composable
-fun DiscoverScreen(navController: NavController, selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
+fun DiscoverScreen(selectShow: (Int) -> Unit, tapSearch: () -> Unit) {
 
     val shows = popularShowsGenerator(showJson())?.shows
     ScrollableColumn {

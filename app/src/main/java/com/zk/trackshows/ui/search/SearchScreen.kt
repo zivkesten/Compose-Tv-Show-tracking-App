@@ -1,34 +1,30 @@
 package com.zk.trackshows.ui.search
 
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.zk.trackshows.components.NetworkImageComponentPicasso
-import com.zk.trackshows.components.ShowCard
-import com.zk.trackshows.ui.mainScreens.popularShowsGenerator
-import com.zk.trackshows.ui.mainScreens.showJson
+import com.zk.trackshows.ui.main.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @Composable
-fun SearchScreen() {
-    val shows = popularShowsGenerator(showJson())?.shows
+fun SearchScreen(viewModel: MainViewModel) {
+    val shows = viewModel.shows
 
     Column() {
         TopAppBar(title = {
@@ -47,13 +43,13 @@ fun SearchScreen() {
                 modifier = Modifier.padding(4.dp)
             ) {
                 shows?.forEach { show ->
-                    //HomePoster(poster = poster, selectPoster = selectPoster)
                     Card() {
                         Column() {
                             NetworkImageComponentPicasso(
-                                url = show.poster_path,
-                                modifier = Modifier.clip(
-                                RoundedCornerShape(10.dp))
+                                    url = show.poster_path,
+                                    modifier = Modifier
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .clickable(onClick = { viewModel.tapShowEvent(show.id)})
                             )
                         }
                     }

@@ -2,8 +2,7 @@ package com.zk.trackshows.ui.main
 
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -22,6 +21,8 @@ import com.zk.trackshows.R
 import com.zk.trackshows.ui.mainScreens.DiscoverScreen
 import com.zk.trackshows.ui.mainScreens.MyShows
 import com.zk.trackshows.ui.mainScreens.WatchList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
 sealed class BottomNavigationScreens(val route: String, @StringRes val resourceId: Int) {
     object WatchList : BottomNavigationScreens("watchList", R.string.watchlist_route)
@@ -30,18 +31,20 @@ sealed class BottomNavigationScreens(val route: String, @StringRes val resourceI
     object Statistics : BottomNavigationScreens("statistics", R.string.statistics_screen_route)
 }
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @ExperimentalAnimationApi
 @Composable
 fun MainScreen(viewModel: MainViewModel,
                selectShow: (Int) -> Unit,
-                tapSearch: () -> Unit)
+               tapSearch: () -> Unit)
 {
     val navController = rememberNavController()
     val items = listOf(
-        BottomNavigationScreens.WatchList,
-        BottomNavigationScreens.MyShows,
-        BottomNavigationScreens.Discover,
-        BottomNavigationScreens.Statistics
+            BottomNavigationScreens.WatchList,
+            BottomNavigationScreens.MyShows,
+            BottomNavigationScreens.Discover,
+            BottomNavigationScreens.Statistics
     )
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -53,73 +56,70 @@ fun MainScreen(viewModel: MainViewModel,
         }, backgroundColor = Color.Transparent
         )
     },
-        bottomBar = {
-            BottomNavigation {
-                val currentRoute = currentRoute(navController, KEY_ROUTE)
-                items.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = {
-                            when (screen) {
-                                is BottomNavigationScreens.WatchList -> Icon(Icons.Filled.Terrain)
-                                is BottomNavigationScreens.MyShows -> Icon(Icons.Filled.Satellite)
-                                is BottomNavigationScreens.Discover -> Icon(Icons.Filled.LocalSee)
-                                is BottomNavigationScreens.Statistics -> Icon(Icons.Filled.ChargingStation)
-                            }
-                        },
-                        label = { Text(stringResource(id = screen.resourceId)) },
-                        selected = currentRoute == screen.route,
-                        alwaysShowLabels = false,
-                        onClick = {
-                            // This if check gives us a "singleTop" behavior where we do not create a
-                            // second instance of the composable if we are already on that destination
-                            if (currentRoute != screen.route) {
-                                Log.d("Zivi", "navigate to: ${screen.route}")
-                                navController.navigate(screen.route)
-                            }
-                        }
-                    )
-                }
-            }
-        }, floatingActionButton = {
-            val currentRoute = currentRoute(navController, KEY_ROUTE)
-            // Only Watchlist screen should include FAB
-            val isWatchList = currentRoute == BottomNavigationScreens.WatchList.route
-            AnimatedVisibility(visible = isWatchList) {
-                FloatingActionButton(
-                    onClick = {},
-                    backgroundColor = MaterialTheme.colors.primary
-                ) {
-                    IconButton(onClick = {}) {
-                        Icon(asset = Icons.Filled.Add)
+            bottomBar = {
+                BottomNavigation {
+                    val currentRoute = currentRoute(navController, KEY_ROUTE)
+                    items.forEach { screen ->
+                        BottomNavigationItem(
+                                icon = {
+                                    when (screen) {
+                                        is BottomNavigationScreens.WatchList -> Icon(Icons.Filled.Terrain)
+                                        is BottomNavigationScreens.MyShows -> Icon(Icons.Filled.Satellite)
+                                        is BottomNavigationScreens.Discover -> Icon(Icons.Filled.LocalSee)
+                                        is BottomNavigationScreens.Statistics -> Icon(Icons.Filled.ChargingStation)
+                                    }
+                                },
+                                label = { Text(stringResource(id = screen.resourceId)) },
+                                selected = currentRoute == screen.route,
+                                alwaysShowLabels = false,
+                                onClick = {
+                                    // This if check gives us a "singleTop" behavior where we do not create a
+                                    // second instance of the composable if we are already on that destination
+                                    if (currentRoute != screen.route) {
+                                        Log.d("Zivi", "navigate to: ${screen.route}")
+                                        navController.navigate(screen.route)
+                                    }
+                                }
+                        )
                     }
                 }
+            }, floatingActionButton = {
+        val currentRoute = currentRoute(navController, KEY_ROUTE)
+        // Only Watchlist screen should include FAB
+        val isWatchList = currentRoute == BottomNavigationScreens.WatchList.route
+        AnimatedVisibility(visible = isWatchList) {
+            FloatingActionButton(
+                    onClick = {},
+                    backgroundColor = MaterialTheme.colors.primary
+            ) {
+                IconButton(onClick = {}) {
+                    Icon(asset = Icons.Filled.Add)
+                }
             }
-        },
-        floatingActionButtonPosition = FabPosition.End
+        }
+    },
+            floatingActionButtonPosition = FabPosition.End
     ) {
         NavHost(navController, startDestination = BottomNavigationScreens.WatchList.route) {
             composable(BottomNavigationScreens.WatchList.route) {
-                WatchList(
-                    navController,
-                    selectShow
-                )
+                  WatchList(
+                          viewModel
+                  )
             }
             composable(BottomNavigationScreens.MyShows.route) {
                 MyShows(
-                    navController,
-                    selectShow)
+                        navController,
+                        selectShow)
             }
             composable(BottomNavigationScreens.Discover.route) {
                 DiscoverScreen(
-                    navController,
-                    selectShow,
-                    tapSearch
+                        selectShow,
+                        tapSearch
                 )
             }
             composable(BottomNavigationScreens.Statistics.route) {
                 WatchList(
-                    navController,
-                    { }
+                        viewModel
                 )
             }
         }
@@ -128,8 +128,8 @@ fun MainScreen(viewModel: MainViewModel,
 
 @Composable
 private fun currentRoute(
-    navController: NavHostController,
-    routeKey: String
+        navController: NavHostController,
+        routeKey: String
 ): String? {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     return navBackStackEntry?.arguments?.getString(routeKey)
