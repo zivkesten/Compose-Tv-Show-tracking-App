@@ -2,6 +2,8 @@ package com.zk.trackshows.repository
 
 import com.google.gson.Gson
 import com.zk.trackshows.model.PopularShows
+import com.zk.trackshows.model.Show
+import kotlinx.coroutines.flow.Flow
 
 
 fun showJson(): String {
@@ -13,3 +15,18 @@ fun popularShowsGenerator(json: String): PopularShows? {
 }
 
 fun mockShows() = popularShowsGenerator(showJson())?.shows
+
+
+interface ShowsRepository {
+
+    fun observeShows(): Flow<Result<List<Show>>>
+
+    suspend fun getShows(forceUpdate: Boolean): Result<List<Show>>
+
+    suspend fun cacheShow(show: Show)
+
+    suspend fun deleteAllShows()
+
+    suspend fun refreshPopularShows()
+
+}

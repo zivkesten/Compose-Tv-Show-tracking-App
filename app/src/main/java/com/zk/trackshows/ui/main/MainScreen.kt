@@ -131,7 +131,6 @@ private fun TrackShowsBottomNavigation(
                     // This if check gives us a "singleTop" behavior where we do not create a
                     // second instance of the composable if we are already on that destination
                     if (currentRoute != screen.route) {
-                        Log.d("Zivi", "navigate to: ${screen.route}")
                         navController.navigate(screen.route)
                     }
                 }

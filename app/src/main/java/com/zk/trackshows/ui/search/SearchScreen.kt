@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,8 @@ fun SearchScreen(viewModel: MainViewModel) {
         TopAppBar(title = {
             Text("Michelle's movie app", fontFamily = FontFamily.Serif)
         }, actions = {
-            Icon(Icons.Default.ArrowBack, modifier = Modifier.padding(8.dp))
+            Modifier.padding(8.dp)
+            Icon(Icons.Default.ArrowBack)
         }, backgroundColor = Color.Black
         )
 

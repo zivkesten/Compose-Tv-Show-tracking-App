@@ -1,21 +1,24 @@
 package com.zk.trackshows.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.platform.setContent
 import com.zk.trackshows.ui.theme.TrackShowsTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
+@AndroidEntryPoint
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     @VisibleForTesting
-    val viewModel = MainViewModel()
+    private val viewModel: MainViewModel by viewModels()
 
     @FlowPreview
     @ExperimentalAnimationApi

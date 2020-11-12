@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -49,15 +51,28 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+
+    // network
+    // network
+    def retrofitVersion ='2.9.0'
+    def okhttpVersion = '4.8.1'
+    def sandwichVersion = '1.0.5'
+    implementation "com.github.skydoves:sandwich:$sandwichVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    //Room
+    def roomVersion = '2.2.5'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
 
     implementation 'com.google.code.gson:gson:2.8.6'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
 
     //JetpackCompose
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -67,8 +82,19 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
-
+    // Jetpack Compose navigation Integration
     def nav_compose_version = "1.0.0-alpha01"
     implementation "androidx.navigation:navigation-compose:$nav_compose_version"
+
+    // Jetpack Compose Paging Integration
+    def paging_compose_version = '1.0.0-alpha01'
+    implementation "androidx.paging:paging-compose:$paging_compose_version"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:2.28.1-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    // When using Kotlin.
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
 }

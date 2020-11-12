@@ -15,8 +15,7 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun ShowDetails(viewModel: MainViewModel) {
 
-    val show = viewModel.state.value.show
-    Log.i("Zivi", "show: ${show?.name}")
+    val show = viewModel.showState.value.show
     whenNotNull(show) { currentShow ->
         NetworkImageComponentPicasso(
                 url = currentShow.poster_path,
