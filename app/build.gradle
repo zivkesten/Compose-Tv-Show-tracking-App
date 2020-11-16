@@ -21,9 +21,15 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/tv/\""
+            buildConfigField "String", "API_KEY", "\"78bc7c1c0a813f1e31044d2cc11c7b85\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/tv/\""
+            buildConfigField "String", "API_KEY", "\"78bc7c1c0a813f1e31044d2cc11c7b85\""
         }
     }
     compileOptions {
@@ -53,12 +59,13 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
-    // network
+    //Lottie
+    def lottieVersion = "3.4.4"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
     // network
     def retrofitVersion ='2.9.0'
     def okhttpVersion = '4.8.1'
-    def sandwichVersion = '1.0.5'
-    implementation "com.github.skydoves:sandwich:$sandwichVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
@@ -83,12 +90,14 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
     // Jetpack Compose navigation Integration
-    def nav_compose_version = "1.0.0-alpha01"
     implementation "androidx.navigation:navigation-compose:$nav_compose_version"
 
     // Jetpack Compose Paging Integration
-    def paging_compose_version = '1.0.0-alpha01'
     implementation "androidx.paging:paging-compose:$paging_compose_version"
+
+    // Accompanist
+    implementation "dev.chrisbanes.accompanist:accompanist-coil:0.3.3.1"
+
 
     //Hilt
     implementation "com.google.dagger:hilt-android:2.28.1-alpha"

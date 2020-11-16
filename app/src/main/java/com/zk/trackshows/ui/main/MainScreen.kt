@@ -1,9 +1,8 @@
 package com.zk.trackshows.ui.main
 
-import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.animation.*
-import androidx.compose.foundation.Text
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons

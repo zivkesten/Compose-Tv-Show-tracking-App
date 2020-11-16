@@ -1,7 +1,7 @@
 package com.zk.trackshows.ui.mainScreens
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,8 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zk.trackshows.repository.popularShowsGenerator
-import com.zk.trackshows.repository.showJson
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -31,19 +29,18 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun DiscoverScreen(viewModel: MainViewModel) {
 
-    val shows = popularShowsGenerator(showJson())?.shows
     ScrollableColumn {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            SearchBox(tapSearch = {  })
+            SearchBox(tapSearch = { viewModel.tapSearch() })
             Spacer(modifier = Modifier.height(16.dp))
-            HorizontalList("Trending now", Icons.Filled.Fireplace, shows, viewModel)
-            HorizontalList("Returning this wee", Icons.Filled.Satellite, shows, viewModel)
-            HorizontalList(icon = Icons.Outlined.Cake, shows = shows, viewModel = viewModel)
-            HorizontalList(shows = shows, viewModel = viewModel)
-            HorizontalList(icon = Icons.Outlined.Gamepad, shows = shows, viewModel = viewModel)
+            HorizontalList("Trending now", Icons.Filled.Fireplace, viewModel)
+            HorizontalList("Returning this wee", Icons.Filled.Satellite, viewModel)
+            HorizontalList(icon = Icons.Outlined.Cake, viewModel = viewModel)
+            HorizontalList(viewModel = viewModel)
+            HorizontalList(icon = Icons.Outlined.Gamepad, viewModel = viewModel)
         }
     }
 }

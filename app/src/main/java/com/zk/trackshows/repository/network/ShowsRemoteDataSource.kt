@@ -15,18 +15,22 @@
  */
 package com.zk.trackshows.repository.network
 
-import com.zk.trackshows.model.PopularShows
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsDataSource
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Implementation of the data source that adds a latency simulating network.
  */
+
 @ExperimentalCoroutinesApi
-object ShowsRemoteDataSource: ShowsDataSource {
+class ShowsRemoteDataSource internal  constructor(
+    private val service: TvShowsService,
+    private val ioDispatcher: CoroutineDispatcher
+): ShowsDataSource {
 
     override fun observeShows(): Flow<Result<List<Show>>> {
         TODO("Not yet implemented")
@@ -36,8 +40,11 @@ object ShowsRemoteDataSource: ShowsDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getShows(): Result<List<Show>> {
-        TODO("Not yet implemented")
+    override suspend fun getPopularShows(): Result<List<Show>?> {
+        return when(val parsedResponse = responseMapper(service.fetchPopularShows())) {
+            is NetworkResult.Success -> Result.Success(parsedResponse.data.shows)
+            is NetworkResult.Error -> Result.Error(parsedResponse.exception)
+        }
     }
 
     override suspend fun cacheShows(show: Show) {

@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 /**
  * Concrete implementation of a data source as a db.
@@ -60,14 +59,14 @@ class ShowsLocalDataSource internal constructor(
 //        // NO-OP
 //    }
 
-    override suspend fun getShows(): Result<List<Show>> =
-        withContext(ioDispatcher) {
-            return@withContext try {
-                Result.Success(showsDao.getShows())
-            } catch (e: Exception) {
-                Result.Error(e)
-            }
+    override suspend fun getPopularShows(): Result<List<Show>?> {
+
+        return try {
+            Result.Success(showsDao.getShows())
+        } catch (e: Exception) {
+            Result.Error(e)
         }
+    }
 //
     override suspend fun cacheShows(show: Show) {
         showsDao.insertShow(show)

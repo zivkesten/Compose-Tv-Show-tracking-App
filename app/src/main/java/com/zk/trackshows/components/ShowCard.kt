@@ -1,6 +1,6 @@
 package com.zk.trackshows.components
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -13,13 +13,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.model.Show
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun ShowCard(show: Show, modifier: Modifier) {
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        NetworkImageComponentPicasso(
-                url = show.poster_path,
+        CoilImage(
+                data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
                 modifier = Modifier
                         .fillMaxHeight()
                         .padding(8.dp)

@@ -25,20 +25,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        // observe toast.
-//        viewModel.toast.observe(this) {
-//            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-//        }
-
-        // fetch shows
-//        viewModel.fetchShowList()
-
-        // set disney contents.
         setContent {
-            TrackShowsTheme() {
+            TrackShowsTheme {
                TrackShowsApp(viewModel = viewModel)
             }
         }
-
     }
 }

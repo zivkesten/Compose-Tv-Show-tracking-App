@@ -2,7 +2,7 @@ package com.zk.trackshows.ui.mainScreens
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,8 +20,6 @@ import com.zk.trackshows.bottomNavigationEnterTransitions
 import com.zk.trackshows.bottomNavigationExitTransitions
 import com.zk.trackshows.components.HorizontalScrollableComponent
 import com.zk.trackshows.extensions.whenNotNull
-import com.zk.trackshows.model.Show
-import com.zk.trackshows.repository.mockShows
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -44,13 +42,12 @@ fun MyShows(viewModel: MainViewModel) {
 @ExperimentalCoroutinesApi
 @Composable
 fun MyShowsContent(viewModel: MainViewModel) {
-    val shows = mockShows()
     ScrollableColumn {
         Column(modifier = Modifier
             .padding(16.dp)
         ) {
-            HorizontalList("Title 1", Icons.Outlined.AddBox, shows, viewModel)
-            HorizontalList("Popular TV Shows", Icons.Outlined.BabyChangingStation, shows, viewModel)
+            HorizontalList("Title 1", Icons.Outlined.AddBox, viewModel)
+            HorizontalList("Popular TV Shows", Icons.Outlined.BabyChangingStation, viewModel)
         }
     }
 }
@@ -58,9 +55,9 @@ fun MyShowsContent(viewModel: MainViewModel) {
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Composable
-fun HorizontalList(title: String? = null, icon: VectorAsset? = null, shows: List<Show>?, viewModel: MainViewModel) {
+fun HorizontalList(title: String? = null, icon: VectorAsset? = null, viewModel: MainViewModel) {
     HorizontalListTitle(title, icon)
-    Shows(shows, viewModel)
+    Shows(viewModel)
 }
 
 @Composable
@@ -74,10 +71,6 @@ private fun HorizontalListTitle(text: String? = null, icon: VectorAsset? = null)
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
-private fun Shows(shows: List<Show>?, viewModel: MainViewModel) {
-    if (shows != null) {
-        HorizontalScrollableComponent(showList = shows, viewModel)
-    } else {
-        Text("No Shows")
-    }
+private fun Shows(viewModel: MainViewModel) {
+    HorizontalScrollableComponent(viewModel)
 }
