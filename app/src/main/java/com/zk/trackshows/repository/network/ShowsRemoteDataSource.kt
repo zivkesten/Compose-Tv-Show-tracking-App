@@ -18,6 +18,7 @@ package com.zk.trackshows.repository.network
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsDataSource
+import com.zk.trackshows.repository.network.api.TvShowsService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +37,7 @@ class ShowsRemoteDataSource internal  constructor(
         TODO("Not yet implemented")
     }
 
-    override fun observeShow(): Flow<Result<Show>> {
+    override fun observeShow(showId: String): Flow<Result<Show>> {
         TODO("Not yet implemented")
     }
 

@@ -3,25 +3,16 @@ package com.zk.trackshows.ui.main
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zk.trackshows.extensions.whenNotNull
+import com.zk.trackshows.AppScreens
+import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsRepository
-import com.zk.trackshows.repository.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-//sealed class Action() {
-//    object ScreenLoad: Action()
-//}
-
-data class ShowsState(
-    val selectedShowId: Int? = 0,
-    val show: Show? = null
-)
 
 data class WatchListState(
     val data: Result<List<Show>>
@@ -33,58 +24,44 @@ class MainViewModel @ViewModelInject constructor(
     private val showsRepository: ShowsRepository
 ) : ViewModel() {
 
-    private val appScreensNavigationChannel = ConflatedBroadcastChannel<AppScreens>()
+    private val _navigationEvent = MutableStateFlow<AppScreens>(AppScreens.MainScreen)
 
-    val navigateTo: Flow<AppScreens> = appScreensNavigationChannel.asFlow()
+    val navigationEvent: MutableStateFlow<AppScreens> get() = _navigationEvent
 
-    private val _showState = MutableStateFlow(ShowsState())
+    private val _popularShowsData = MutableStateFlow(WatchListState(Result.Loading))
 
-    val showState: MutableStateFlow<ShowsState> get() = _showState
-
-    private val _watchListState = MutableStateFlow(WatchListState(Result.Loading))
-
-    val watchListState: StateFlow<WatchListState> get() = _watchListState
+    val popularShows: StateFlow<WatchListState> get() = _popularShowsData
 
     init {
         viewModelScope.launch {
-            showsRepository.refreshPopularShows()
-            showsRepository.observePopularShows().collect {
-                when (it) {
-                    is Result.Loading -> {
-                        _watchListState.value = watchListState.value.copy(data = Result.Loading)
-                    }
-                    is Result.Error -> {
-                        _watchListState.value = watchListState.value.copy(data = Result.Error(it.exception))
-                    }
-                    is Result.Success -> {
-                        _watchListState.value = watchListState.value.copy(data = Result.Success(it.data))
-                    }
+            initPopularShowsFlow()
+        }
+    }
+
+    private suspend fun initPopularShowsFlow() {
+        showsRepository.observePopularShows(true).collect {
+            when (it) {
+                is Result.Loading -> {
+                    _popularShowsData.value = popularShows.value.copy(data = Result.Loading)
+                }
+                is Result.Error -> {
+                    _popularShowsData.value =
+                        popularShows.value.copy(data = Result.Error(it.exception))
+                }
+                is Result.Success -> {
+                    _popularShowsData.value =
+                        popularShows.value.copy(data = Result.Success(it.data))
                 }
             }
         }
     }
 
-    fun tapShowEvent(showId: Int) {
-        val show = currentShowList()?.first { it.id == showId  }
-        whenNotNull(show) {
-            _showState.value = _showState.value.copy(show = it)
-            navigateToAppScreen(AppScreens.Details)
-        }
+    fun tapShowEvent(show: Show) {
+        logMessage("currentShowList()?.first { it.id == showId  } is ${show.name}")
+            _navigationEvent.value = AppScreens.Details(show)
     }
 
     fun tapSearch() {
-        navigateToAppScreen(AppScreens.Search)
-    }
-
-    private fun navigateToAppScreen(screen: AppScreens) {
-        viewModelScope.launch {
-            appScreensNavigationChannel.send(screen)
-        }
-    }
-
-    fun currentShowList(): List<Show>? {
-        return if (watchListState.value.data.succeeded) {
-            (watchListState.value.data as Result.Success<List<Show>>).data
-        } else { null }
+        _navigationEvent.value = AppScreens.Search
     }
 }

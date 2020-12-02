@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/tv/\""
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/\""
             buildConfigField "String", "API_KEY", "\"78bc7c1c0a813f1e31044d2cc11c7b85\""
         }
         release {
@@ -58,9 +58,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     //Lottie
-    def lottieVersion = "3.4.4"
+    def lottieVersion = "3.5.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // network

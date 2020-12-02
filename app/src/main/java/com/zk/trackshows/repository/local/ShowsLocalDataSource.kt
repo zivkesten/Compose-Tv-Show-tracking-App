@@ -39,8 +39,8 @@ class ShowsLocalDataSource internal constructor(
         }
     }
 
-    override fun observeShow(): Flow<Result<Show>> {
-        return showsDao.observeShow().map {
+    override fun observeShow(showId: String): Flow<Result<Show>> {
+        return showsDao.observeShowById(showId).map {
             Result.Success(it)
         }
     }
@@ -67,7 +67,7 @@ class ShowsLocalDataSource internal constructor(
             Result.Error(e)
         }
     }
-//
+
     override suspend fun cacheShows(show: Show) {
         showsDao.insertShow(show)
     }

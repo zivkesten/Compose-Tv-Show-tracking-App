@@ -9,7 +9,7 @@ interface ShowsDataSource {
 
     fun observeShows(): Flow<Result<List<Show>>>
 
-    fun observeShow(): Flow<Result<Show>>
+    fun observeShow(showId: String): Flow<Result<Show>>
 
     suspend fun getPopularShows(): Result<List<Show>?>
 

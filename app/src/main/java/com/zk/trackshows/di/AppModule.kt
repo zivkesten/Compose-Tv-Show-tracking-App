@@ -23,7 +23,7 @@ import com.zk.trackshows.repository.local.ShowsDao
 import com.zk.trackshows.repository.local.ShowsDatabase
 import com.zk.trackshows.repository.local.ShowsLocalDataSource
 import com.zk.trackshows.repository.network.ShowsRemoteDataSource
-import com.zk.trackshows.repository.network.TvShowsService
+import com.zk.trackshows.repository.network.api.TvShowsService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

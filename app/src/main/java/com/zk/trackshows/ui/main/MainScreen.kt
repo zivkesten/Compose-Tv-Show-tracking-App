@@ -17,8 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.zk.trackshows.R
+import com.zk.trackshows.common.InfoLogger
+import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.mainScreens.DiscoverScreen
-import com.zk.trackshows.ui.mainScreens.MyShows
+import com.zk.trackshows.ui.mainScreens.MyShowsScreen
 import com.zk.trackshows.ui.mainScreens.WatchList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -34,7 +36,7 @@ sealed class BottomNavigationScreens(val route: String, @StringRes val resourceI
 @ExperimentalCoroutinesApi
 @ExperimentalAnimationApi
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(viewModel: MainViewModel, service: TvShowsService) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomNavigationScreens.WatchList,
@@ -44,11 +46,15 @@ fun MainScreen(viewModel: MainViewModel) {
     )
     Scaffold(
         topBar = { TrackShowsTopBar() },
-        bottomBar = { TrackShowsBottomNavigation(navController, bottomNavigationItems) },
+        bottomBar = {
+            TrackShowsBottomNavigation(navController, bottomNavigationItems) {
+                handleMainScreenInteractionEvents(navController, it)
+            }
+        },
         floatingActionButton = { TrackShowsFloatingActionButton(navController) },
         floatingActionButtonPosition = FabPosition.End
     ) {
-        MainScreenNavigationConfigurations(navController, viewModel)
+        MainScreenNavigationConfigurations(navController, viewModel, service)
     }
 }
 
@@ -58,17 +64,18 @@ fun MainScreen(viewModel: MainViewModel) {
 @Composable
 private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    service: TvShowsService
 ) {
     NavHost(navController, startDestination = BottomNavigationScreens.WatchList.route) {
         composable(BottomNavigationScreens.WatchList.route) {
             WatchList(viewModel)
         }
         composable(BottomNavigationScreens.MyShows.route) {
-            MyShows(viewModel = viewModel)
+            MyShowsScreen(viewModel = viewModel)
         }
         composable(BottomNavigationScreens.Discover.route) {
-            DiscoverScreen(viewModel)
+            DiscoverScreen(viewModel, service)
         }
         composable(BottomNavigationScreens.Statistics.route) {
             WatchList(viewModel)
@@ -109,7 +116,8 @@ private fun TrackShowsFloatingActionButton(navController: NavHostController) {
 @Composable
 private fun TrackShowsBottomNavigation(
     navController: NavHostController,
-    items: List<BottomNavigationScreens>
+    items: List<BottomNavigationScreens>,
+    mainScreenInteractionEvents: (MainScreenInteractionEvents) -> Unit
 ) {
     BottomNavigation {
         val currentRoute = currentRoute(navController)
@@ -130,7 +138,8 @@ private fun TrackShowsBottomNavigation(
                     // This if check gives us a "singleTop" behavior where we do not create a
                     // second instance of the composable if we are already on that destination
                     if (currentRoute != screen.route) {
-                        navController.navigate(screen.route)
+                        mainScreenInteractionEvents(MainScreenInteractionEvents.NavigateTo(screen.route))
+                        //navController.navigate(screen.route)
                     }
                 }
             )
@@ -144,4 +153,21 @@ private fun currentRoute(
 ): String? {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     return navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+}
+
+fun handleMainScreenInteractionEvents(
+    navController: NavHostController,
+    interactionEvents: MainScreenInteractionEvents,
+) {
+    when (interactionEvents) {
+        is MainScreenInteractionEvents.NavigateTo -> {
+            navController.navigate(interactionEvents.route)
+        }
+        is MainScreenInteractionEvents.AddToMyWatchlist -> {
+            InfoLogger.logMessage("AddToMyWatchlist clicked")
+        }
+        is MainScreenInteractionEvents.RemoveFromMyWatchlist -> {
+            InfoLogger.logMessage("RemoveFromMyWatchlist clicked")
+        }
+    }
 }

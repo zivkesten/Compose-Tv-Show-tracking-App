@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.zk.trackshows.ui.main.MainViewModel
+import com.zk.trackshows.ui.mainScreens.MyShowsScreen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -28,7 +29,7 @@ fun SearchScreen(viewModel: MainViewModel) {
             Icon(Icons.Default.ArrowBack)
         }, backgroundColor = Color.Black
         )
-        MovieTrendingScreen(viewModel = viewModel)
+        MyShowsScreen(viewModel = viewModel)
     }
 }
 

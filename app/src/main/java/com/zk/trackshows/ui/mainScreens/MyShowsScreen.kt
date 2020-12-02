@@ -1,4 +1,4 @@
-package com.zk.trackshows.ui.search
+package com.zk.trackshows.ui.mainScreens
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.ui.main.MainViewModel
+import com.zk.trackshows.ui.search.MoviesLaneItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
-fun MovieTrendingScreen(viewModel: MainViewModel) {
+fun MyShowsScreen(viewModel: MainViewModel) {
     val statusBarHeight = 32.dp
     val showLoading = remember { mutableStateOf(true) }
     val listOfSections = listOf(
@@ -52,7 +53,8 @@ fun DynamicSection(
     viewModel: MainViewModel,
     showLoading: MutableState<Boolean>,
 ) {
-    val shows by viewModel.watchListState.collectAsState()
+    val shows by viewModel.popularShows.collectAsState()
+
     when (val showList = shows.data) {
         is Result.Loading -> { showLoading.value = true }
         is Result.Error -> { showLoading.value = false }
@@ -63,6 +65,4 @@ fun DynamicSection(
             }
         }
     }
-
-
 }

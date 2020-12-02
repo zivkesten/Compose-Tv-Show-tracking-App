@@ -49,7 +49,7 @@ fun WatchList(viewModel: MainViewModel) {
 @FlowPreview
 @Composable
 private fun WatchListContent(viewModel: MainViewModel) {
-    val showsState = viewModel.watchListState.collectAsState()
+    val showsState = viewModel.popularShows.collectAsState()
 
     when (val data = showsState.value.data) {
         is Result.Loading -> { LoadingWidget() }
@@ -92,7 +92,7 @@ fun EmptyListWidget() {
 @Composable
 private fun ListWidget(
     data: Result.Success<List<Show>>,
-    viewModel: MainViewModel,
+    viewModel: MainViewModel
 ) {
     // ScrollableColumn is a composable that adds the ability to scroll through the
     // child views
@@ -107,7 +107,7 @@ private fun ListWidget(
                 ShowCard(
                     show, modifier = Modifier.fillMaxWidth()
                         .clickable(onClick = {
-                            viewModel.tapShowEvent(show.id)
+                            viewModel.tapShowEvent(show)
                         })
                 )
             }

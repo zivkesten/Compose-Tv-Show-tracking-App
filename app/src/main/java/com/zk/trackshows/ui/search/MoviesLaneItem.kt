@@ -24,6 +24,7 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @Composable
 fun MoviesLaneItem(shows: List<Show>, title: String = "", viewModel: MainViewModel) {
+
     if (title.isNotEmpty()) {
         Text(
             text = title,
@@ -39,7 +40,7 @@ fun MoviesLaneItem(shows: List<Show>, title: String = "", viewModel: MainViewMod
                 .preferredHeight(300.dp)
                 .padding(12.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .clickable(onClick = { viewModel.tapShowEvent(showId = show.id) }),
+                .clickable(onClick = { viewModel.tapShowEvent(show = show) }),
             contentScale = ContentScale.Crop
         )
     }

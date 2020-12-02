@@ -22,17 +22,8 @@ interface ShowsDao {
     fun observeShows(): Flow<List<Show>>
 
     @Query("SELECT * FROM Show")
-    fun observeShow(): Flow<Show>
+    suspend fun getShows(): List<Show>
 
-    @Query("SELECT * FROM Show")
-    fun getShows(): List<Show>
-
-    /**
-     * Observes a single task.
-     *
-     * @param showId the task id.
-     * @return the task with taskId.
-     */
     @Query("SELECT * FROM Show WHERE id = :showId")
     fun observeShowById(showId: String): Flow<Show>
 

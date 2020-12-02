@@ -24,5 +24,21 @@ data class Show(
   @ColumnInfo(name = "poster_path") val poster_path: String,
   @ColumnInfo(name = "vote_average") val vote_average: Double,
   @ColumnInfo(name = "vote_count") val vote_count: Int
-) : Parcelable
+) : Parcelable {
+  companion object {
+    fun mock(): Show {
+      return Show(0,
+        "\"https://image.tmdb.org/t/p/w500/edmk8xjGBsYVIf4QtLY9WMaMcXZ.jpg",
+        "",
+        "mock Show",
+        "",
+        "",
+        "",
+        0.0,
+        "",
+        0.0,
+        0)
+    }
+  }
+}
 

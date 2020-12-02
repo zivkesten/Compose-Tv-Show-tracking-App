@@ -8,6 +8,5 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @Database(entities = [Show::class], version = 1, exportSchema = false)
 abstract class ShowsDatabase : RoomDatabase() {
-
     abstract fun showDao(): ShowsDao
 }
