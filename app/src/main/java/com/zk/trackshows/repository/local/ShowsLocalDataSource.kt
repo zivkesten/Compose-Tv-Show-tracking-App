@@ -15,6 +15,11 @@
  */
 package com.zk.trackshows.repository.local
 
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsDataSource
@@ -30,8 +35,12 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 class ShowsLocalDataSource internal constructor(
     private val showsDao: ShowsDao,
+    private val remoteKeys: RemoteKeysDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ShowsDataSource {
+    override fun observePagedShows(): PagingSource<Int, Show> {
+        return showsDao.showsPagingSource()
+    }
 
     override fun observeShows(): Flow<Result<List<Show>>> {
         return showsDao.observeShows().map {
@@ -68,8 +77,12 @@ class ShowsLocalDataSource internal constructor(
         }
     }
 
-    override suspend fun cacheShows(show: Show) {
+    override suspend fun cacheShow(show: Show) {
         showsDao.insertShow(show)
+    }
+
+    override suspend fun cacheShows(shows: List<Show>) {
+        showsDao.insertAll(shows)
     }
 
     override suspend fun deleteAllShows() {
@@ -79,5 +92,19 @@ class ShowsLocalDataSource internal constructor(
     override suspend fun refreshPopularShows() {
         // NO-OP
     }
+
+    suspend fun insertAll(remoteKey: List<RemoteKeys>) {
+        remoteKeys.insertAll(remoteKey)
+    }
+
+    suspend fun remoteKeysRepoId(showId: Int): RemoteKeys? {
+        return remoteKeys.remoteKeysShowId(showId)
+    }
+
+    suspend fun clearRemoteKeys() {
+        remoteKeys.clearRemoteKeys()
+    }
 }
+
+
 

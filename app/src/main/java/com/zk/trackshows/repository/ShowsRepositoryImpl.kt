@@ -1,11 +1,11 @@
 package com.zk.trackshows.repository
 
+import androidx.paging.PagingSource
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
@@ -20,11 +20,21 @@ class ShowsRepositoryImpl (
     private val _observePopularShows= MutableStateFlow<Result<List<Show>?>>(Result.Loading)
     private val observePopularShows: StateFlow<Result<List<Show>?>> get() = _observePopularShows
 
-    override suspend fun observePopularShows(forceUpdate: Boolean): Flow<Result<List<Show>>> {
+    override suspend fun observePopularShows(forceUpdate: Boolean): PagingSource<Int, Show> {
         if (forceUpdate) {
             refreshPopularShows()
         }
-        return showsLocalDataSource.observeShows()
+
+        return showsLocalDataSource.observePagedShows()
+
+//        return Pager(
+//            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+//            remoteMediator = ShowsRemoteMediator(
+//                showsLocalDataSource,
+//                showsRemoteDataSource
+//            ),
+//            pagingSourceFactory = pagingSourceFactory
+//        ).flow
     }
 
     override suspend fun refreshPopularShows() {
@@ -53,8 +63,8 @@ class ShowsRepositoryImpl (
         val remoteShows = showsRemoteDataSource.getPopularShows()
         if (remoteShows is Result.Success) {
             showsLocalDataSource.deleteAllShows()
-            remoteShows.data?.forEach { show ->
-                showsLocalDataSource.cacheShows(show)
+            remoteShows.data?.let { shows ->
+                showsLocalDataSource.cacheShows(shows)
             }
         } else if (remoteShows is Result.Error) {
             throw remoteShows.exception
@@ -62,7 +72,7 @@ class ShowsRepositoryImpl (
     }
 
     override suspend fun cacheShow(show: Show) {
-        showsLocalDataSource.cacheShows(show)
+        showsLocalDataSource.cacheShow(show)
     }
 
     override suspend fun deleteAllShows() {

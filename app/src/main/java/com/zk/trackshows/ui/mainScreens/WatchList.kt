@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,18 +20,22 @@ import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.zk.trackshows.AnimatedBottomNavigationTransition
 import com.zk.trackshows.R
 import com.zk.trackshows.bottomNavigationEnterTransitions
 import com.zk.trackshows.bottomNavigationExitTransitions
+import com.zk.trackshows.components.LazyPagingRowWithPagingData
 import com.zk.trackshows.components.ShowCard
+import com.zk.trackshows.extensions.whenNotNull
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalAnimationApi
@@ -49,15 +54,24 @@ fun WatchList(viewModel: MainViewModel) {
 @FlowPreview
 @Composable
 private fun WatchListContent(viewModel: MainViewModel) {
+//    val showsState = viewModel.popularShows.collectAsState()
+//
+//    when (val data = showsState.value.data) {
+//        is Result.Loading -> { LoadingWidget() }
+//        is Result.Error -> { ErrorWidget(data) }
+//        is Result.Success -> {
+//            if (data.data.isEmpty()) EmptyListWidget() else ListWidget(data, viewModel)
+//        }
+//    }
+
     val showsState = viewModel.popularShows.collectAsState()
 
-    when (val data = showsState.value.data) {
-        is Result.Loading -> { LoadingWidget() }
-        is Result.Error -> { ErrorWidget(data) }
-        is Result.Success -> {
-            if (data.data.isEmpty()) EmptyListWidget() else ListWidget(data, viewModel)
-        }
-    }
+    val pagingSource = showsState.value.pagedData
+
+    pagingSource?.let {
+        LazyPagingRowWithPagingData(pagingSource = it, title = "as" , viewModel = viewModel)
+    } ?: EmptyListWidget()
+
 }
 
 @Composable

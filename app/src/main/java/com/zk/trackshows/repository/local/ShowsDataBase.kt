@@ -6,7 +6,8 @@ import com.zk.trackshows.model.Show
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-@Database(entities = [Show::class], version = 1, exportSchema = false)
+@Database(entities = [Show::class, RemoteKeys::class], version = 1, exportSchema = false)
 abstract class ShowsDatabase : RoomDatabase() {
     abstract fun showDao(): ShowsDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
 }

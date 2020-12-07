@@ -15,9 +15,11 @@
  */
 package com.zk.trackshows.repository.network
 
+import androidx.paging.PagingSource
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsDataSource
+import com.zk.trackshows.repository.network.api.RemotePagingSource
 import com.zk.trackshows.repository.network.api.TvShowsService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +34,10 @@ class ShowsRemoteDataSource internal  constructor(
     private val service: TvShowsService,
     private val ioDispatcher: CoroutineDispatcher
 ): ShowsDataSource {
+
+    override fun observePagedShows(): PagingSource<Int, Show> {
+        return RemotePagingSource(service::fetchPagedPopularShows)
+    }
 
     override fun observeShows(): Flow<Result<List<Show>>> {
         TODO("Not yet implemented")
@@ -48,7 +54,11 @@ class ShowsRemoteDataSource internal  constructor(
         }
     }
 
-    override suspend fun cacheShows(show: Show) {
+    override suspend fun cacheShow(show: Show) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cacheShows(shows: List<Show>) {
         TODO("Not yet implemented")
     }
 

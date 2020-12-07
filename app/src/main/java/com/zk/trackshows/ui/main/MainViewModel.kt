@@ -1,8 +1,14 @@
 package com.zk.trackshows.ui.main
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.zk.trackshows.AppScreens
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
@@ -15,7 +21,8 @@ import kotlinx.coroutines.launch
 
 
 data class WatchListState(
-    val data: Result<List<Show>>
+    val data: Result<List<Show>>,
+    val pagedData: PagingSource<Int, Show>? = null
 )
 
 @FlowPreview
@@ -32,33 +39,26 @@ class MainViewModel @ViewModelInject constructor(
 
     val popularShows: StateFlow<WatchListState> get() = _popularShowsData
 
+
+
     init {
         viewModelScope.launch {
             initPopularShowsFlow()
         }
     }
 
+    suspend fun observePopularShows(): PagingSource<Int, Show> {
+        return showsRepository.observePopularShows(true)
+    }
+
     private suspend fun initPopularShowsFlow() {
-        showsRepository.observePopularShows(true).collect {
-            when (it) {
-                is Result.Loading -> {
-                    _popularShowsData.value = popularShows.value.copy(data = Result.Loading)
-                }
-                is Result.Error -> {
-                    _popularShowsData.value =
-                        popularShows.value.copy(data = Result.Error(it.exception))
-                }
-                is Result.Success -> {
-                    _popularShowsData.value =
-                        popularShows.value.copy(data = Result.Success(it.data))
-                }
-            }
-        }
+        val pager = showsRepository.observePopularShows(true)
+        _popularShowsData.value = _popularShowsData.value.copy(pagedData = pager)
     }
 
     fun tapShowEvent(show: Show) {
         logMessage("currentShowList()?.first { it.id == showId  } is ${show.name}")
-            _navigationEvent.value = AppScreens.Details(show)
+        _navigationEvent.value = AppScreens.Details(show)
     }
 
     fun tapSearch() {

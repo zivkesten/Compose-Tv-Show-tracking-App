@@ -1,23 +1,23 @@
-package com.zk.trackshows.repository.network.api
+package com.zk.trackshows.repository.local
 
 import androidx.paging.PagingSource
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
+import com.zk.trackshows.repository.network.api.TvShowResponse
 import retrofit2.HttpException
 import java.io.IOException
 
 private const val TV_SHOWS_STARTING_PAGE_INDEX = 1
 
 
-class ApiPagingSource(
-    private val pagedDataFetcher: suspend (Int) -> TvShowResponse,
+class LocalPagingSource(
+    private val pagedDataFetcher: suspend (Int) -> List<Show>,
 ) : PagingSource<Int, Show>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Show> {
         val position = params.key ?: TV_SHOWS_STARTING_PAGE_INDEX
         return try {
-            val response = pagedDataFetcher(position)
-            val shows = response.shows
+            val shows = pagedDataFetcher(position)
             logMessage("Service -> fetchPopularShows: ${shows.size}")
             LoadResult.Page(
                 data = shows,

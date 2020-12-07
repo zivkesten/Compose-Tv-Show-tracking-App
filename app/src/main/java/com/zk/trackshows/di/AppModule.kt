@@ -75,7 +75,7 @@ object AppModule {
         ioDispatcher: CoroutineDispatcher
     ): ShowsDataSource {
         return ShowsLocalDataSource(
-            database.showDao(), ioDispatcher
+            database.showDao(), database.remoteKeysDao(), ioDispatcher
         )
     }
 

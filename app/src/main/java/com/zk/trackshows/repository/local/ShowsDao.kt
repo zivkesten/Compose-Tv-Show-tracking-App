@@ -1,5 +1,6 @@
 package com.zk.trackshows.repository.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -15,8 +16,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ShowsDao {
 
-//    @Query("SELECT * FROM show ")
-//    fun showsPagingSource(): PagingSource<Int, List<Show>>
+    @Query("SELECT * FROM show ")
+    fun showsPagingSource(): PagingSource<Int, Show>
 
     @Query("SELECT * FROM Show")
     fun observeShows(): Flow<List<Show>>
@@ -26,6 +27,9 @@ interface ShowsDao {
 
     @Query("SELECT * FROM Show WHERE id = :showId")
     fun observeShowById(showId: String): Flow<Show>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(repos: List<Show>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShow(show: Show)

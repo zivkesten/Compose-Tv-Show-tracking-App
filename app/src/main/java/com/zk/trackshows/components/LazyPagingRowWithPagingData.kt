@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingSource
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -31,14 +32,13 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
-fun LazyPagingRow(
-    dataSource: suspend (Int) -> TvShowResponse,
+fun LazyPagingRowWithPagingData(
+    pagingSource: PagingSource<Int, Show>,
     title: String,
     viewModel: MainViewModel,
 ) {
-    val showsPaging = remember {
-        RemotePagingSource(dataSource)
-    }
+
+    val showsPaging = remember { pagingSource }
     val pager = remember {
 
         Pager(
@@ -52,6 +52,7 @@ fun LazyPagingRow(
     }
 
     val lazyPagingItems: LazyPagingItems<Show> = pager.flow.collectAsLazyPagingItems()
+
 
     Column {
         RowTitle(title)
