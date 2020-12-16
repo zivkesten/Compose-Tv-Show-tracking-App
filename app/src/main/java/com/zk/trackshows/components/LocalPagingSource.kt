@@ -1,9 +1,8 @@
-package com.zk.trackshows.repository.local
+package com.zk.trackshows.components
 
 import androidx.paging.PagingSource
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
-import com.zk.trackshows.repository.network.api.TvShowResponse
 import retrofit2.HttpException
 import java.io.IOException
 

@@ -1,15 +1,19 @@
 package com.zk.trackshows.repository
 
-import androidx.paging.PagingSource
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
+import com.zk.trackshows.model.WatchedShow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
+@ExperimentalPagingApi
 @ExperimentalCoroutinesApi
 class ShowsRepositoryImpl (
     private val showsRemoteDataSource: ShowsDataSource,
@@ -17,24 +21,16 @@ class ShowsRepositoryImpl (
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ShowsRepository {
 
-    private val _observePopularShows= MutableStateFlow<Result<List<Show>?>>(Result.Loading)
-    private val observePopularShows: StateFlow<Result<List<Show>?>> get() = _observePopularShows
+    override fun observePagedPopularShows(forceUpdate: Boolean): Flow<PagingData<Show>> {
 
-    override suspend fun observePopularShows(forceUpdate: Boolean): PagingSource<Int, Show> {
-        if (forceUpdate) {
-            refreshPopularShows()
-        }
-
-        return showsLocalDataSource.observePagedShows()
-
-//        return Pager(
-//            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
-//            remoteMediator = ShowsRemoteMediator(
-//                showsLocalDataSource,
-//                showsRemoteDataSource
-//            ),
-//            pagingSourceFactory = pagingSourceFactory
-//        ).flow
+        return Pager(
+            config = PagingConfig(pageSize = 10, enablePlaceholders = true),
+            remoteMediator = ShowsRemoteMediator(
+                showsLocalDataSource,
+                showsRemoteDataSource
+            ),
+            pagingSourceFactory = showsLocalDataSource::observePagedShows
+        ).flow
     }
 
     override suspend fun refreshPopularShows() {
@@ -55,24 +51,36 @@ class ShowsRepositoryImpl (
                     Result.Error(ex)
                 }
             }
-            showsLocalDataSource.getPopularShows()
+            Result.Success(showsLocalDataSource.getPopularShows())
         }
     }
 
     private suspend fun updatePopularShowsFromRemoteDataSource() {
         val remoteShows = showsRemoteDataSource.getPopularShows()
-        if (remoteShows is Result.Success) {
-            showsLocalDataSource.deleteAllShows()
-            remoteShows.data?.let { shows ->
-                showsLocalDataSource.cacheShows(shows)
-            }
-        } else if (remoteShows is Result.Error) {
-            throw remoteShows.exception
+        showsLocalDataSource.deleteAllShows()
+        remoteShows?.let { shows ->
+            showsLocalDataSource.cacheShows(shows)
         }
     }
 
     override suspend fun cacheShow(show: Show) {
         showsLocalDataSource.cacheShow(show)
+    }
+
+    override suspend fun addToWatchList(show: WatchedShow) {
+        showsLocalDataSource.addToWatchList(show)
+    }
+
+    override suspend fun observeWatchedShow(showId: Int): Flow<WatchedShow> {
+        return showsLocalDataSource.observeWatchedShow(showId)
+    }
+
+    override suspend fun observeWatchList(): Flow<List<Show>> {
+        return showsLocalDataSource.observeWatchList()
+    }
+
+    override suspend fun removeFromWatchList(showId: Int) {
+        return showsLocalDataSource.removeFromWatchList(showId)
     }
 
     override suspend fun deleteAllShows() {

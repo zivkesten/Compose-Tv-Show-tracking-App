@@ -20,7 +20,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.zk.trackshows.repository.local.RemoteKeys
 
 @Dao
 interface RemoteKeysDao {
@@ -30,6 +29,9 @@ interface RemoteKeysDao {
 
     @Query("SELECT * FROM remote_keys WHERE showId = :showId")
     suspend fun remoteKeysShowId(showId: Int): RemoteKeys?
+
+    @Query("SELECT * FROM remote_keys")
+    suspend fun getKeys(): List<RemoteKeys>?
 
     @Query("DELETE FROM remote_keys")
     suspend fun clearRemoteKeys()

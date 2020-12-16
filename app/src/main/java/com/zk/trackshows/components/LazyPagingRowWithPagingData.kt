@@ -1,5 +1,6 @@
 package com.zk.trackshows.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -7,22 +8,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.zk.trackshows.model.Show
-import com.zk.trackshows.repository.network.api.RemotePagingSource
-import com.zk.trackshows.repository.network.api.TvShowResponse
 import com.zk.trackshows.ui.main.MainViewModel
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -33,26 +28,11 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
 fun LazyPagingRowWithPagingData(
-    pagingSource: PagingSource<Int, Show>,
     title: String,
     viewModel: MainViewModel,
 ) {
 
-    val showsPaging = remember { pagingSource }
-    val pager = remember {
-
-        Pager(
-            PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = true,
-            )
-        ) {
-            showsPaging
-        }
-    }
-
-    val lazyPagingItems: LazyPagingItems<Show> = pager.flow.collectAsLazyPagingItems()
-
+    val lazyPagingItems: LazyPagingItems<Show> = viewModel.popularShowsPagedData.collectAsLazyPagingItems()
 
     Column {
         RowTitle(title)

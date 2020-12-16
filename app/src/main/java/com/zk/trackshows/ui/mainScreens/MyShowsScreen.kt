@@ -5,13 +5,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.zk.trackshows.repository.Result
+import com.zk.trackshows.components.LazyPagingRowWithPagingData
 import com.zk.trackshows.ui.main.MainViewModel
-import com.zk.trackshows.ui.search.MoviesLaneItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -19,6 +20,7 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
 fun MyShowsScreen(viewModel: MainViewModel) {
+
     val statusBarHeight = 32.dp
     val showLoading = remember { mutableStateOf(true) }
     val listOfSections = listOf(
@@ -37,32 +39,33 @@ fun MyShowsScreen(viewModel: MainViewModel) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
 
-        listOfSections.forEach {
-            DynamicSection(it, viewModel, showLoading)
+        listOfSections.forEach { title ->
+            LazyPagingRowWithPagingData(title = title, viewModel = viewModel)
+            //DynamicSection(it, viewModel, showLoading)
         }
 
         Spacer(modifier = Modifier.height(100.dp))
     }
 }
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-@Composable
-fun DynamicSection(
-    type: String,
-    viewModel: MainViewModel,
-    showLoading: MutableState<Boolean>,
-) {
-    val shows by viewModel.popularShows.collectAsState()
-
-    when (val showList = shows.data) {
-        is Result.Loading -> { showLoading.value = true }
-        is Result.Error -> { showLoading.value = false }
-        is Result.Success -> {
-            showLoading.value = false
-            if (showList.data.isNotEmpty()) {
-                MoviesLaneItem(shows = showList.data, title = type, viewModel = viewModel)
-            }
-        }
-    }
-}
+//@ExperimentalCoroutinesApi
+//@FlowPreview
+//@Composable
+//fun DynamicSection(
+//    type: String,
+//    viewModel: MainViewModel,
+//    showLoading: MutableState<Boolean>,
+//) {
+//    val shows by viewModel.popularShows.collectAsState()
+//
+//    when (val showList = shows.data) {
+//        is Result.Loading -> { showLoading.value = true }
+//        is Result.Error -> { showLoading.value = false }
+//        is Result.Success -> {
+//            showLoading.value = false
+//            if (showList.data.isNotEmpty()) {
+//                MoviesLaneItem(shows = showList.data, title = type, viewModel = viewModel)
+//            }
+//        }
+//    }
+//}

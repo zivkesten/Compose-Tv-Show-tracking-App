@@ -20,12 +20,16 @@ fun ShowCard(show: Show, modifier: Modifier) {
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         CoilImage(
-                data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
-                modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(8.dp)
-                        .height(150.dp)
-                        .clip(RoundedCornerShape(10.dp))
+            data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
+            modifier = modifier
+                .then(Modifier
+                    .fillMaxHeight()
+                    .padding(8.dp)
+                    .height(150.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                ),
+            loading = { CircularProgressIndicator() },
+            fadeIn = true
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(

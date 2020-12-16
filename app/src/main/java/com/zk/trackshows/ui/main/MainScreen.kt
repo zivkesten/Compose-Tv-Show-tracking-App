@@ -20,16 +20,13 @@ import com.zk.trackshows.R
 import com.zk.trackshows.common.InfoLogger
 import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.mainScreens.DiscoverScreen
-import com.zk.trackshows.ui.mainScreens.MyShowsScreen
 import com.zk.trackshows.ui.mainScreens.WatchList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 sealed class BottomNavigationScreens(val route: String, @StringRes val resourceId: Int) {
     object WatchList : BottomNavigationScreens("watchList", R.string.watchlist_route)
-    object MyShows : BottomNavigationScreens("myShows", R.string.my_shows_screen_route)
     object Discover : BottomNavigationScreens("discover", R.string.discover_screen_route)
-    object Statistics : BottomNavigationScreens("statistics", R.string.statistics_screen_route)
 }
 
 @FlowPreview
@@ -40,9 +37,7 @@ fun MainScreen(viewModel: MainViewModel, service: TvShowsService) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomNavigationScreens.WatchList,
-        BottomNavigationScreens.MyShows,
-        BottomNavigationScreens.Discover,
-        BottomNavigationScreens.Statistics
+        BottomNavigationScreens.Discover
     )
     Scaffold(
         topBar = { TrackShowsTopBar() },
@@ -67,18 +62,12 @@ private fun MainScreenNavigationConfigurations(
     viewModel: MainViewModel,
     service: TvShowsService
 ) {
-    NavHost(navController, startDestination = BottomNavigationScreens.WatchList.route) {
+    NavHost(navController, startDestination = BottomNavigationScreens.Discover.route) {
         composable(BottomNavigationScreens.WatchList.route) {
             WatchList(viewModel)
         }
-        composable(BottomNavigationScreens.MyShows.route) {
-            MyShowsScreen(viewModel = viewModel)
-        }
         composable(BottomNavigationScreens.Discover.route) {
             DiscoverScreen(viewModel, service)
-        }
-        composable(BottomNavigationScreens.Statistics.route) {
-            WatchList(viewModel)
         }
     }
 }
@@ -107,7 +96,7 @@ private fun TrackShowsFloatingActionButton(navController: NavHostController) {
             backgroundColor = MaterialTheme.colors.primary
         ) {
             IconButton(onClick = {}) {
-                Icon(asset = Icons.Filled.Add)
+                Icon(imageVector = Icons.Filled.Add)
             }
         }
     }
@@ -126,12 +115,10 @@ private fun TrackShowsBottomNavigation(
                 icon = {
                     when (screen) {
                         is BottomNavigationScreens.WatchList -> Icon(Icons.Filled.Terrain)
-                        is BottomNavigationScreens.MyShows -> Icon(Icons.Filled.Satellite)
                         is BottomNavigationScreens.Discover -> Icon(Icons.Filled.LocalSee)
-                        is BottomNavigationScreens.Statistics -> Icon(Icons.Filled.ChargingStation)
                     }
                 },
-                label = { Text(stringResource(id = screen.resourceId)) },
+                label = { stringResource(id = screen.resourceId) },
                 selected = currentRoute == screen.route,
                 alwaysShowLabels = false,
                 onClick = {
@@ -139,7 +126,6 @@ private fun TrackShowsBottomNavigation(
                     // second instance of the composable if we are already on that destination
                     if (currentRoute != screen.route) {
                         mainScreenInteractionEvents(MainScreenInteractionEvents.NavigateTo(screen.route))
-                        //navController.navigate(screen.route)
                     }
                 }
             )

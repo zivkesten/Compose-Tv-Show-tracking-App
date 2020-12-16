@@ -78,6 +78,7 @@ private fun PagingRow(
     viewModel: MainViewModel,
 ) {
     LazyRow {
+       //lazyPagingItems.printWarning()
         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
             item {
                 CircularProgressIndicator()

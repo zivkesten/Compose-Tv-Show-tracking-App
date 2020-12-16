@@ -11,7 +11,9 @@ import kotlinx.android.parcel.Parcelize
 @Immutable
 @Parcelize
 data class Show(
-  @PrimaryKey val id: Int,
+  @PrimaryKey(autoGenerate = true)
+  val databaseId: Int,
+  @ColumnInfo(name = "id") val id: Int,
   @ColumnInfo(name = "backdrop_path") val backdrop_path: String? = null,
   @ColumnInfo(name = "first_air_date") val first_air_date: String,
   //@ColumnInfo(name = "genre_ids") val genre_ids: List<Int>,
@@ -27,7 +29,8 @@ data class Show(
 ) : Parcelable {
   companion object {
     fun mock(): Show {
-      return Show(0,
+      return Show(Math.random().toInt(),
+        0,
         "\"https://image.tmdb.org/t/p/w500/edmk8xjGBsYVIf4QtLY9WMaMcXZ.jpg",
         "",
         "mock Show",

@@ -17,6 +17,7 @@
 package com.zk.trackshows.di
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import com.zk.trackshows.repository.*
 import com.zk.trackshows.repository.local.ShowsDao
@@ -59,12 +60,9 @@ object AppModule {
     @RemoteTasksDataSource
     @Provides
     fun provideTasksRemoteDataSource(
-        service: TvShowsService,
-        ioDispatcher: CoroutineDispatcher
+        service: TvShowsService
     ): ShowsDataSource {
-        return ShowsRemoteDataSource(
-            service, ioDispatcher
-        )
+        return ShowsRemoteDataSource(service)
     }
 
     @Singleton
@@ -72,10 +70,9 @@ object AppModule {
     @Provides
     fun provideTasksLocalDataSource(
         database: ShowsDatabase,
-        ioDispatcher: CoroutineDispatcher
     ): ShowsDataSource {
         return ShowsLocalDataSource(
-            database.showDao(), database.remoteKeysDao(), ioDispatcher
+            database.showDao(), database.watchListDao(),database.remoteKeysDao()
         )
     }
 
@@ -103,6 +100,7 @@ object AppModule {
 /**
  * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
  */
+@ExperimentalPagingApi
 @ExperimentalCoroutinesApi
 @Module
 @InstallIn(ApplicationComponent::class)

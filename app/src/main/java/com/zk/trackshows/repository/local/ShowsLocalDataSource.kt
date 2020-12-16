@@ -15,16 +15,12 @@
  */
 package com.zk.trackshows.repository.local
 
-import androidx.paging.PagingData
 import androidx.paging.PagingSource
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import com.zk.trackshows.model.Show
+import com.zk.trackshows.model.WatchedShow
 import com.zk.trackshows.repository.Result
 import com.zk.trackshows.repository.ShowsDataSource
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import com.zk.trackshows.repository.network.api.TvShowResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -35,9 +31,19 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 class ShowsLocalDataSource internal constructor(
     private val showsDao: ShowsDao,
-    private val remoteKeys: RemoteKeysDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val watchListDao: WatchListDao,
+    private val remoteKeys: RemoteKeysDao
 ) : ShowsDataSource {
+
+    override suspend fun observeWatchList(): Flow<List<Show>> {
+        val watchedShowsIds = watchListDao.getShows().map { it.showId }
+        return showsDao.observeSelectedShowsShows(watchedShowsIds)
+    }
+
+    override fun observeWatchedShow(showId: Int): Flow<WatchedShow> {
+        return watchListDao.observeShow(showId)
+    }
+
     override fun observePagedShows(): PagingSource<Int, Show> {
         return showsDao.showsPagingSource()
     }
@@ -54,31 +60,20 @@ class ShowsLocalDataSource internal constructor(
         }
     }
 
-//    override fun observeTask(taskId: String): LiveData<Result<Task>> {
-//        return tasksDao.observeTaskById(taskId).map {
-//            Success(it)
-//        }
-//    }
+    override suspend fun getPopularShows(): List<Show> {
+        return showsDao.getShows()
+    }
 
-//    override suspend fun refreshTask(taskId: String) {
-//        // NO-OP
-//    }
-//
-//    override suspend fun refreshTasks() {
-//        // NO-OP
-//    }
-
-    override suspend fun getPopularShows(): Result<List<Show>?> {
-
-        return try {
-            Result.Success(showsDao.getShows())
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+    override suspend fun getPagedPopularShows(page: Int): TvShowResponse {
+       return TvShowResponse(100000, getPopularShows())
     }
 
     override suspend fun cacheShow(show: Show) {
         showsDao.insertShow(show)
+    }
+
+    override suspend fun getKeys(): List<RemoteKeys>? {
+        return remoteKeys.getKeys()
     }
 
     override suspend fun cacheShows(shows: List<Show>) {
@@ -93,11 +88,19 @@ class ShowsLocalDataSource internal constructor(
         // NO-OP
     }
 
+    override suspend fun addToWatchList(show: WatchedShow) {
+        watchListDao.insertShow(show)
+    }
+
+    override suspend fun removeFromWatchList(showId: Int) {
+        watchListDao.deleteShow(showId)
+    }
+
     suspend fun insertAll(remoteKey: List<RemoteKeys>) {
         remoteKeys.insertAll(remoteKey)
     }
 
-    suspend fun remoteKeysRepoId(showId: Int): RemoteKeys? {
+    suspend fun remoteKeysShowId(showId: Int): RemoteKeys? {
         return remoteKeys.remoteKeysShowId(showId)
     }
 

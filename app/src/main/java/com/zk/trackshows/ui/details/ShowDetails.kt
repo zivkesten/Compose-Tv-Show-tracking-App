@@ -7,10 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,14 +31,15 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
-fun ShowDetails(show: Show?) {
+fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
 
     //logMessage("the show: ${show?.name}")
+    show?.let { viewModel.onEvent(Event.ScreenLoad(it)) }
     Box(modifier = Modifier.fillMaxSize().background(Color.Green)) {
 
         Column {
 
-            ShowDetailContent(show = show)
+            ShowDetailContent(viewModel, show = show)
         }
 
         TopAppBar(
@@ -53,9 +56,11 @@ fun ShowDetails(show: Show?) {
         )
     }
 }
+@ExperimentalCoroutinesApi
 @Composable
-fun ShowDetailContent(show: Show?) {
+fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
     val expand = remember { mutableStateOf(false) }
+    val state = viewModel.detailScreenState.collectAsState().value
     //val viewModel: MainViewModel = viewModel()
     //var dominantColors = listOf(graySurface, Color.Black)
 
@@ -86,7 +91,7 @@ fun ShowDetailContent(show: Show?) {
                     expand.value = true
                 }
             )
-            Column(modifier = Modifier.background(MaterialTheme.colors.onSurface)) {
+            Column(modifier = Modifier.background(MaterialTheme.colors.surface)) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -97,9 +102,11 @@ fun ShowDetailContent(show: Show?) {
                         modifier = Modifier.padding(8.dp),
                         style = typography.h6
                     )
-                    IconButton(onClick = {}) {
+                    FloatingActionButton(onClick = { viewModel.onEvent(Event.TapAddToWatchList(show)) }) {
+
+                        val icon = if (state.isInWatchList) Icons.Default.Remove else Icons.Default.Add
                         Icon(
-                            asset = Icons.Default.LibraryAdd,
+                            imageVector = icon,
                             tint = MaterialTheme.colors.primary
                         )
                     }

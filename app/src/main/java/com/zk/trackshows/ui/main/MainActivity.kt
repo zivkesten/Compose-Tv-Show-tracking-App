@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.lifecycleScope
 import com.zk.trackshows.AppScreens
@@ -12,17 +13,12 @@ import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.details.DetailActivity
-import com.zk.trackshows.ui.theme.TrackShowsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
-sealed class AppHomeInteractionEvents {
-    data class NavigateToDetailScreen(val show: Show) : AppHomeInteractionEvents()
-}
 
 sealed class MainScreenInteractionEvents {
     data class NavigateTo(val route: String) : MainScreenInteractionEvents()
@@ -48,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            TrackShowsTheme {
+            MaterialTheme {
                 MainScreen(viewModel = viewModel, service = service)
             }
         }

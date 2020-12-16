@@ -2,11 +2,10 @@ package com.zk.trackshows.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
-import com.zk.trackshows.R
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.ui.theme.TrackShowsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +28,7 @@ class DetailActivity : AppCompatActivity() {
 
         setContent {
             TrackShowsTheme {
-                ShowDetails(show)
+                ShowDetails(viewModel, show)
             }
         }
     }

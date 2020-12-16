@@ -1,6 +1,5 @@
 package com.zk.trackshows.repository.network.api
 
-import com.zk.trackshows.repository.network.api.TvShowResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

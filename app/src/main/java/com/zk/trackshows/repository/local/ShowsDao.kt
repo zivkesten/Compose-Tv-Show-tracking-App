@@ -22,6 +22,9 @@ interface ShowsDao {
     @Query("SELECT * FROM Show")
     fun observeShows(): Flow<List<Show>>
 
+    @Query("SELECT * FROM Show WHERE id IN (:showIds)")
+    fun observeSelectedShowsShows(showIds: List<Int>): Flow<List<Show>>
+
     @Query("SELECT * FROM Show")
     suspend fun getShows(): List<Show>
 

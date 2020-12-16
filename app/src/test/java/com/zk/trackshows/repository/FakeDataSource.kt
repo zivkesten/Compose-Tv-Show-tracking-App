@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zk.trackshows.repository.network
+
+package com.zk.trackshows.repository
 
 import androidx.paging.PagingSource
 import com.zk.trackshows.model.Show
 import com.zk.trackshows.model.WatchedShow
-import com.zk.trackshows.repository.Result
-import com.zk.trackshows.repository.ShowsDataSource
 import com.zk.trackshows.repository.local.RemoteKeys
-import com.zk.trackshows.repository.network.api.RemotePagingSource
 import com.zk.trackshows.repository.network.api.TvShowResponse
-import com.zk.trackshows.repository.network.api.TvShowsService
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Implementation of the data source that adds a latency simulating network.
- */
-
 @ExperimentalCoroutinesApi
-class ShowsRemoteDataSource internal  constructor(
-    private val service: TvShowsService
-): ShowsDataSource {
+class FakeDataSource(var shows: MutableList<Show?> = mutableListOf()) : ShowsDataSource {
     override suspend fun observeWatchList(): Flow<List<Show>> {
         TODO("Not yet implemented")
     }
@@ -45,7 +35,7 @@ class ShowsRemoteDataSource internal  constructor(
     }
 
     override fun observePagedShows(): PagingSource<Int, Show> {
-        return RemotePagingSource(service::fetchPagedPopularShows)
+        TODO("Not yet implemented")
     }
 
     override fun observeShows(): Flow<Result<List<Show>>> {
@@ -56,15 +46,12 @@ class ShowsRemoteDataSource internal  constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPopularShows(): List<Show> {
-        return when(val parsedResponse = responseMapper(service.fetchPopularShows())) {
-            is NetworkResult.Success -> parsedResponse.data.shows
-            is NetworkResult.Error -> emptyList()
-        }
+    override suspend fun getPopularShows(): List<Show>? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getPagedPopularShows(page: Int): TvShowResponse {
-        return service.fetchPagedPopularShows(page)
+        TODO("Not yet implemented")
     }
 
     override suspend fun cacheShow(show: Show) {
@@ -94,4 +81,65 @@ class ShowsRemoteDataSource internal  constructor(
     override suspend fun removeFromWatchList(showId: Int) {
         TODO("Not yet implemented")
     }
+//    override suspend fun getTasks(): Result<List<Show>> {
+//        tasks?.let { return Success(ArrayList(it)) }
+//        return Error(
+//            Exception("Tasks not found")
+//        )
+//    }
+//
+//    override suspend fun getTask(taskId: String): Result<Task> {
+//        tasks?.firstOrNull { it.id == taskId }?.let { return Success(it) }
+//        return Error(
+//            Exception("Task not found")
+//        )
+//    }
+//
+//    override suspend fun saveTask(task: Task) {
+//        tasks?.add(task)
+//    }
+//
+//    override suspend fun completeTask(task: Task) {
+//        tasks?.firstOrNull { it.id == task.id }?.let { it.isCompleted = true }
+//    }
+//
+//    override suspend fun completeTask(taskId: String) {
+//        tasks?.firstOrNull { it.id == taskId }?.let { it.isCompleted = true }
+//    }
+//
+//    override suspend fun activateTask(task: Task) {
+//        tasks?.firstOrNull { it.id == task.id }?.let { it.isCompleted = false }
+//    }
+//
+//    override suspend fun activateTask(taskId: String) {
+//        tasks?.firstOrNull { it.id == taskId }?.let { it.isCompleted = false }
+//    }
+//
+//    override suspend fun clearCompletedTasks() {
+//        tasks?.removeIf { it.isCompleted }
+//    }
+//
+//    override suspend fun deleteAllTasks() {
+//        tasks?.clear()
+//    }
+//
+//    override suspend fun deleteTask(taskId: String) {
+//        tasks?.removeIf { it.id == taskId }
+//    }
+//
+//    override fun observeTasks(): LiveData<Result<List<Task>>> {
+//        TODO("not implemented")
+//    }
+//
+//    override suspend fun refreshTasks() {
+//        TODO("not implemented")
+//    }
+//
+//    override fun observeTask(taskId: String): LiveData<Result<Task>> {
+//        TODO("not implemented")
+//    }
+//
+//    override suspend fun refreshTask(taskId: String) {
+//        TODO("not implemented")
+//    }
 }

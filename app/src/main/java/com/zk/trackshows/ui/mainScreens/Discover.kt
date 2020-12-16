@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.components.LazyPagingRow
 import com.zk.trackshows.components.LazyPagingRowWithPagingData
-
 import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,16 +28,20 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun DiscoverScreen(viewModel: MainViewModel, service: TvShowsService) {
 
-        ScrollableColumn() {
-            Column() {
+
+        ScrollableColumn {
+            Column {
                 SearchBox(viewModel::tapSearch)
                 LazyPagingRow(dataSource = service::fetchPagedTopRatedShows,
                     title = "Top Rated",
                     viewModel = viewModel)
-                LazyPagingRow(dataSource = service::fetchPagedTrendingTVShows,
-                    title = "Trending this week",
-                    viewModel = viewModel)
-                LazyPagingRow(dataSource = service::fetchPagedPopularShows,
+//                LazyPagingRow(dataSource = service::fetchPagedTrendingTVShows,
+//                    title = "Trending this week",
+//                    viewModel = viewModel)
+//                LazyPagingRow(dataSource = service::fetchPagedPopularShows,
+//                    title = "Popular shows",
+//                    viewModel = viewModel)
+                LazyPagingRowWithPagingData(
                     title = "Popular shows",
                     viewModel = viewModel)
             }
@@ -57,7 +60,7 @@ fun SearchBox(tapSearch: () -> Unit) {
             .clickable(onClick = tapSearch)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(asset = Icons.Outlined.Search, modifier = Modifier.padding(4.dp))
+            Icon(imageVector = Icons.Outlined.Search, modifier = Modifier.padding(4.dp))
             Text(text = "Tap to search", style = TextStyle(Color.Gray, 10.sp))
         }
     }
