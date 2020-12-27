@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.lifecycleScope
 import com.zk.trackshows.AppScreens
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.details.DetailActivity
 import dagger.hilt.android.AndroidEntryPoint

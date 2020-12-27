@@ -1,7 +1,7 @@
 package com.zk.trackshows
 
 import android.app.Application
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.domain.model.Show
 import dagger.hilt.android.HiltAndroidApp
 
 sealed class AppScreens {

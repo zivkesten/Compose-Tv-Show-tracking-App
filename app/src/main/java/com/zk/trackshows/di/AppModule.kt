@@ -19,20 +19,27 @@ package com.zk.trackshows.di
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
-import com.zk.trackshows.repository.*
-import com.zk.trackshows.repository.local.ShowsDao
+import coil.ImageLoader
+import coil.util.CoilUtils
+import com.zk.trackshows.repository.LocalDataSource
+import com.zk.trackshows.repository.RemoteDataSource
+import com.zk.trackshows.repository.ShowsRepository
+import com.zk.trackshows.repository.ShowsRepositoryImpl
+import com.zk.trackshows.repository.local.dao.PopularShowsDao
 import com.zk.trackshows.repository.local.ShowsDatabase
 import com.zk.trackshows.repository.local.ShowsLocalDataSource
+import com.zk.trackshows.repository.local.model.ShowEntityMapper
 import com.zk.trackshows.repository.network.ShowsRemoteDataSource
 import com.zk.trackshows.repository.network.api.TvShowsService
+import com.zk.trackshows.repository.network.model.ShowDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.OkHttpClient
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.annotation.AnnotationRetention.RUNTIME
@@ -61,7 +68,7 @@ object AppModule {
     @Provides
     fun provideTasksRemoteDataSource(
         service: TvShowsService
-    ): ShowsDataSource {
+    ): RemoteDataSource {
         return ShowsRemoteDataSource(service)
     }
 
@@ -70,9 +77,9 @@ object AppModule {
     @Provides
     fun provideTasksLocalDataSource(
         database: ShowsDatabase,
-    ): ShowsDataSource {
+    ): LocalDataSource {
         return ShowsLocalDataSource(
-            database.showDao(), database.watchListDao(),database.remoteKeysDao()
+            database.watchListDao(), database.popularShowsDao(), database.topRatedShowsDao()
         )
     }
 
@@ -88,13 +95,30 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideShowsDao(myDB: ShowsDatabase): ShowsDao {
-        return myDB.showDao()
+    fun providePopularShowsDao(myDB: ShowsDatabase): PopularShowsDao {
+        return myDB.popularShowsDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideShowsEntityMapper(): ShowEntityMapper {
+        return ShowEntityMapper()
     }
 
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
+
+    @Singleton
+    @Provides
+    fun provideImageLoader(context: Context) =
+        ImageLoader.Builder(context)
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .cache(CoilUtils.createDefaultCache(context))
+                    .build()
+            }
+            .build()
 }
 
 /**
@@ -109,12 +133,13 @@ object ShowsRepositoryModule {
     @Singleton
     @Provides
     fun provideShowsRepository(
-        @AppModule.RemoteTasksDataSource remoteTasksDataSource: ShowsDataSource,
-        @AppModule.LocalTasksDataSource localTasksDataSource: ShowsDataSource,
-        ioDispatcher: CoroutineDispatcher
+        @AppModule.RemoteTasksDataSource remoteTasksDataSource: RemoteDataSource,
+        @AppModule.LocalTasksDataSource localTasksDataSource: LocalDataSource,
+        dtoMapper: ShowDtoMapper,
+        entityMapper: ShowEntityMapper
     ): ShowsRepository {
         return ShowsRepositoryImpl(
-            remoteTasksDataSource, localTasksDataSource, ioDispatcher
+            remoteTasksDataSource, localTasksDataSource, dtoMapper, entityMapper
         )
     }
 }

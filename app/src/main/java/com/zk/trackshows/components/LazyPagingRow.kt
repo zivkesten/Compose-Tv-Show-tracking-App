@@ -19,9 +19,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.zk.trackshows.model.Show
 import com.zk.trackshows.repository.network.api.RemotePagingSource
 import com.zk.trackshows.repository.network.api.TvShowResponse
+import com.zk.trackshows.repository.network.model.ShowDto
+import com.zk.trackshows.repository.network.model.ShowDtoMapper
 import com.zk.trackshows.ui.main.MainViewModel
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -51,7 +52,7 @@ fun LazyPagingRow(
         }
     }
 
-    val lazyPagingItems: LazyPagingItems<Show> = pager.flow.collectAsLazyPagingItems()
+    val lazyPagingItems: LazyPagingItems<ShowDto> = pager.flow.collectAsLazyPagingItems()
 
     Column {
         RowTitle(title)
@@ -74,7 +75,7 @@ private fun RowTitle(title: String) {
 @FlowPreview
 @Composable
 private fun PagingRow(
-    lazyPagingItems: LazyPagingItems<Show>,
+    lazyPagingItems: LazyPagingItems<ShowDto>,
     viewModel: MainViewModel,
 ) {
     LazyRow {
@@ -87,13 +88,18 @@ private fun PagingRow(
         items(lazyPagingItems) { show ->
             if (show != null) {
                 CoilImage(
-                    data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
+                    data = "https://image.tmdb.org/t/p/original/${show.poster_path}",
                     modifier = Modifier
                         .preferredWidth(190.dp)
                         .preferredHeight(300.dp)
                         .padding(12.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .clickable(onClick = { viewModel.tapShowEvent(show = show) }),
+                        .clickable(onClick = {
+                            viewModel.tapShowEvent(
+                                // TODO: 27/12/2020 Remove DTO from UI, no need to map
+                                show = ShowDtoMapper().mapToDomainModel(show)
+                            )
+                        }),
                     contentScale = ContentScale.Crop
                 )
             }

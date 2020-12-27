@@ -1,5 +1,6 @@
 package com.zk.trackshows.ui.details
 
+import android.util.Log
 import androidx.compose.animation.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollableColumn
@@ -7,9 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,7 +21,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.common.InfoLogger.logMessage
+import com.zk.trackshows.components.VisibilityAnimationFAB
+import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +34,7 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
 
-    //logMessage("the show: ${show?.name}")
+    logMessage("the show: ${show?.name}")
     show?.let { viewModel.onEvent(Event.ScreenLoad(it)) }
     Box(modifier = Modifier.fillMaxSize().background(Color.Green)) {
 
@@ -81,7 +82,7 @@ fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
     ) {
         show?.let { show ->
             CoilImage(
-                data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
+                data = "https://image.tmdb.org/t/p/original/${show.poster_path}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .preferredHeight(
@@ -98,18 +99,14 @@ fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = show.name,
+                        text = show.name ?: "No name",
                         modifier = Modifier.padding(8.dp),
                         style = typography.h6
                     )
-                    FloatingActionButton(onClick = { viewModel.onEvent(Event.TapAddToWatchList(show)) }) {
 
-                        val icon = if (state.isInWatchList) Icons.Default.Remove else Icons.Default.Add
-                        Icon(
-                            imageVector = icon,
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
+                    Log.d("Zivi", "show ${show.name} is in watch list ${state.isInWatchList}")
+                    VisibilityAnimationFAB(state.isInWatchList) { viewModel.onEvent(Event.TapAddToWatchList(show))}
+
                 }
                 //GenreSection(viewModel, movie.genre_ids)
                 Text(
@@ -126,7 +123,7 @@ fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
                     )
                 )
                 Text(
-                    text = show.overview,
+                    text = show.overview ?: "No overview",
                     modifier = Modifier
                         .padding(8.dp),
                     style = typography.subtitle2

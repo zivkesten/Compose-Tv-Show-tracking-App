@@ -1,13 +1,18 @@
 package com.zk.trackshows.ui.main
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.zk.trackshows.AppScreens
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.repository.ShowsRepository
+import com.zk.trackshows.repository.local.model.PopularShow
+import com.zk.trackshows.repository.local.model.ShowEntityMapper
+import com.zk.trackshows.repository.local.model.WatchedShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -18,7 +23,7 @@ data class WatchListState(
     val loading: Boolean? = true,
     val error: Exception? = null,
     val watchedShows: List<Show>? = null,
-    val pagingData: PagingData<Show>? = null
+    val pagingData: PagingData<PopularShow>? = null
 )
 
 sealed class MainScreenEvent {
@@ -28,7 +33,8 @@ sealed class MainScreenEvent {
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainViewModel @ViewModelInject constructor(
-    private val showsRepository: ShowsRepository
+    private val showsRepository: ShowsRepository,
+    private val entityMapper: ShowEntityMapper
 ) : ViewModel() {
 
     private val _navigationEvent = MutableStateFlow<AppScreens>(AppScreens.MainScreen)
@@ -39,7 +45,13 @@ class MainViewModel @ViewModelInject constructor(
 
     val watchedShows: StateFlow<WatchListState> get() = _watchedShows
 
-    val popularShowsPagedData: Flow<PagingData<Show>> = showsRepository.observePagedPopularShows(true)
+    // This flow originates from a PopularShow stream and mapped to Show
+    val popularShowsPagedData: Flow<PagingData<Show>> =
+        showsRepository.popularShowsPagingData(true)
+            .map { pagingData -> pagingData.map { popularShow ->
+                        entityMapper.mapToDomainModel(popularShow.show)
+                    }
+            }
 
 
     fun tapShowEvent(show: Show) {
@@ -61,12 +73,17 @@ class MainViewModel @ViewModelInject constructor(
 
     private fun screenLoadToResult() {
         viewModelScope.launch {
-            showsRepository.observeWatchList().collect {
+            Log.i("Zivi", "screenLoadToResult")
+            showsRepository.observeWatchList().collect { watchedShows ->
+                Log.v("Zivi", "observeWatchList: ${watchedShows.size}")
+                val entities = watchedShows.map { it.show }
+                val shows = entityMapper.toDomainList(entities)
                 _watchedShows.value =
                     _watchedShows.value.copy(
                         loading = false,
                         error = null,
-                        watchedShows = it)
+                        watchedShows = shows
+                    )
             }
         }
     }

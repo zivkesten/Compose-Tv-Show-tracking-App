@@ -1,9 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        compose_version = '1.0.0-alpha08'
-        nav_compose_version='1.0.0-alpha03'
-        paging_compose_version = '1.0.0-alpha03'
+        compose_version = '1.0.0-alpha09'
+        nav_compose_version='1.0.0-alpha04'
+        paging_compose_version = '1.0.0-alpha04'
         kotlin_version = "1.4.21"
         hilt_version = "2.29.1-alpha"
     }

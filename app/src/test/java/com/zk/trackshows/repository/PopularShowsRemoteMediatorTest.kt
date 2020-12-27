@@ -4,7 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 
-class ShowsRemoteMediatorTest {
+class PopularShowsRemoteMediatorTest {
 
     @ExperimentalCoroutinesApi
     @ExperimentalPagingApi

@@ -3,6 +3,7 @@ package com.zk.trackshows.di
 import com.zk.trackshows.BuildConfig
 import com.zk.trackshows.repository.network.AuthInterceptor
 import com.zk.trackshows.repository.network.api.TvShowsService
+import com.zk.trackshows.repository.network.model.ShowDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +43,11 @@ object NetworkModule {
   @Singleton
   fun provideTvShowService(retrofit: Retrofit): TvShowsService {
     return retrofit.create(TvShowsService::class.java)
+  }
+
+  @Singleton
+  @Provides
+  fun provideShowsDtoMapper(): ShowDtoMapper {
+    return ShowDtoMapper()
   }
 }

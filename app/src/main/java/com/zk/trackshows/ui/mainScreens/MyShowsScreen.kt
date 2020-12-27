@@ -40,8 +40,11 @@ fun MyShowsScreen(viewModel: MainViewModel) {
         }
 
         listOfSections.forEach { title ->
-            LazyPagingRowWithPagingData(title = title, viewModel = viewModel)
-            //DynamicSection(it, viewModel, showLoading)
+            LazyPagingRowWithPagingData(
+                title = title,
+                viewModel::tapShowEvent,
+                viewModel.popularShowsPagedData
+            )
         }
 
         Spacer(modifier = Modifier.height(100.dp))

@@ -1,6 +1,5 @@
 package com.zk.trackshows.components
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -12,35 +11,35 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.domain.model.Show
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun ShowCard(show: Show, modifier: Modifier) {
 
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    val innerModifier = modifier.then(Modifier
+        .fillMaxHeight()
+        .padding(8.dp)
+        .height(150.dp)
+        .clip(RoundedCornerShape(10.dp))
+    )
+    Row(modifier = innerModifier, verticalAlignment = Alignment.CenterVertically) {
         CoilImage(
-            data = "https://image.tmdb.org/t/p/w500/${show.poster_path}",
-            modifier = modifier
-                .then(Modifier
-                    .fillMaxHeight()
-                    .padding(8.dp)
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                ),
-            loading = { CircularProgressIndicator() },
+            data = "https://image.tmdb.org/t/p/original/${show.poster_path}",
+            modifier = innerModifier,
+            loading = { CircularProgressIndicator(modifier = innerModifier) },
             fadeIn = true
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                    text = show.name,
+                    text = show.name ?: "No name",
                     fontSize = 15.sp,
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp)
             )
             Text(
-                    text = show.original_name,
+                    text = show.original_name ?: "No Name",
                     fontSize = 15.sp,
                     fontFamily = FontFamily.SansSerif,
                     //modifier = Modifier.padding(4.dp)

@@ -16,76 +16,34 @@
 package com.zk.trackshows.repository.local
 
 import androidx.paging.PagingSource
-import com.zk.trackshows.model.Show
-import com.zk.trackshows.model.WatchedShow
-import com.zk.trackshows.repository.Result
-import com.zk.trackshows.repository.ShowsDataSource
-import com.zk.trackshows.repository.network.api.TvShowResponse
+import com.zk.trackshows.repository.local.model.PopularShow
+import com.zk.trackshows.repository.local.model.WatchedShow
+import com.zk.trackshows.repository.LocalDataSource
+import com.zk.trackshows.repository.local.dao.PopularShowsDao
+import com.zk.trackshows.repository.local.dao.TopRatedShowsDao
+import com.zk.trackshows.repository.local.dao.WatchListDao
+import com.zk.trackshows.repository.local.model.TopRatedShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 
 /**
  * Concrete implementation of a data source as a db.
  */
 @ExperimentalCoroutinesApi
 class ShowsLocalDataSource internal constructor(
-    private val showsDao: ShowsDao,
     private val watchListDao: WatchListDao,
-    private val remoteKeys: RemoteKeysDao
-) : ShowsDataSource {
+    private val popularShowsDao: PopularShowsDao,
+    private val topRatedShowsDao: TopRatedShowsDao
+) : LocalDataSource {
 
-    override suspend fun observeWatchList(): Flow<List<Show>> {
-        val watchedShowsIds = watchListDao.getShows().map { it.showId }
-        return showsDao.observeSelectedShowsShows(watchedShowsIds)
+    override suspend fun observeWatchedShows(): Flow<List<WatchedShow>> {
+        val watchShows = watchListDao.getShows()
+        return flow { emit(watchShows) }
     }
 
-    override fun observeWatchedShow(showId: Int): Flow<WatchedShow> {
-        return watchListDao.observeShow(showId)
-    }
-
-    override fun observePagedShows(): PagingSource<Int, Show> {
-        return showsDao.showsPagingSource()
-    }
-
-    override fun observeShows(): Flow<Result<List<Show>>> {
-        return showsDao.observeShows().map {
-            Result.Success(it)
-        }
-    }
-
-    override fun observeShow(showId: String): Flow<Result<Show>> {
-        return showsDao.observeShowById(showId).map {
-            Result.Success(it)
-        }
-    }
-
-    override suspend fun getPopularShows(): List<Show> {
-        return showsDao.getShows()
-    }
-
-    override suspend fun getPagedPopularShows(page: Int): TvShowResponse {
-       return TvShowResponse(100000, getPopularShows())
-    }
-
-    override suspend fun cacheShow(show: Show) {
-        showsDao.insertShow(show)
-    }
-
-    override suspend fun getKeys(): List<RemoteKeys>? {
-        return remoteKeys.getKeys()
-    }
-
-    override suspend fun cacheShows(shows: List<Show>) {
-        showsDao.insertAll(shows)
-    }
-
-    override suspend fun deleteAllShows() {
-        showsDao.deleteShows()
-    }
-
-    override suspend fun refreshPopularShows() {
-        // NO-OP
+    override fun observePagedPopularShows(): PagingSource<Int, PopularShow> {
+        return popularShowsDao.popularShowsPagingSource()
     }
 
     override suspend fun addToWatchList(show: WatchedShow) {
@@ -96,17 +54,22 @@ class ShowsLocalDataSource internal constructor(
         watchListDao.deleteShow(showId)
     }
 
-    suspend fun insertAll(remoteKey: List<RemoteKeys>) {
-        remoteKeys.insertAll(remoteKey)
+    override suspend fun clearPopularShowsCache() {
+        popularShowsDao.deleteShows()
     }
 
-    suspend fun remoteKeysShowId(showId: Int): RemoteKeys? {
-        return remoteKeys.remoteKeysShowId(showId)
+    override suspend fun cachePopularShows(shows: List<PopularShow>) {
+        popularShowsDao.insertAll(shows)
     }
 
-    suspend fun clearRemoteKeys() {
-        remoteKeys.clearRemoteKeys()
+    override suspend fun clearTopRatedShowsCache() {
+        topRatedShowsDao.deleteShows()
     }
+
+    override suspend fun cacheTopRatedShows(shows: List<TopRatedShow>) {
+        topRatedShowsDao.insertAll(shows)
+    }
+
 }
 
 

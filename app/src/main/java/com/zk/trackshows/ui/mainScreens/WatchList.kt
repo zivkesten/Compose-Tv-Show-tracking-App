@@ -1,7 +1,8 @@
 package com.zk.trackshows.ui.mainScreens
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.AnimatedBottomNavigationTransition
-import com.zk.trackshows.bottomNavigationEnterTransitions
-import com.zk.trackshows.bottomNavigationExitTransitions
+import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.components.ShowCard
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.main.MainScreenEvent
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,8 +34,8 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun WatchList(viewModel: MainViewModel) {
     AnimatedBottomNavigationTransition(
-        enter = bottomNavigationEnterTransitions(),
-        exit = bottomNavigationExitTransitions()
+        enter = /*bottomNavigationEnterTransitions()*/fadeIn(),
+        exit = fadeOut()
     ) {
         WatchListContent(viewModel)
     }
@@ -50,6 +50,8 @@ fun WatchListContent(
 ) {
     viewModel.onEvent(MainScreenEvent.ScreenLoad)
     val watchListState = viewModel.watchedShows.collectAsState().value
+
+    logMessage("watchListState.watchedShows: ${watchListState.watchedShows?.size}")
     watchListState.loading?.let { loading -> if (loading) CircularProgressIndicator() }
     watchListState.error?.let { error -> ErrorWidget(error) }
     watchListState.watchedShows?.let { shows ->

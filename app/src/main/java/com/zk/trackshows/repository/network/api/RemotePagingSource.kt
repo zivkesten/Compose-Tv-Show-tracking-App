@@ -2,7 +2,7 @@ package com.zk.trackshows.repository.network.api
 
 import androidx.paging.PagingSource
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.model.Show
+import com.zk.trackshows.repository.network.model.ShowDto
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -11,9 +11,9 @@ private const val TV_SHOWS_STARTING_PAGE_INDEX = 1
 
 class RemotePagingSource(
     private val pagedDataFetcher: suspend (Int) -> TvShowResponse,
-) : PagingSource<Int, Show>() {
+) : PagingSource<Int, ShowDto>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Show> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ShowDto> {
         val position = params.key ?: TV_SHOWS_STARTING_PAGE_INDEX
         return try {
             val response = pagedDataFetcher(position)

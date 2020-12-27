@@ -1,10 +1,10 @@
-package com.zk.trackshows.repository.local
+package com.zk.trackshows.repository.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.zk.trackshows.model.WatchedShow
+import com.zk.trackshows.repository.local.model.WatchedShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
