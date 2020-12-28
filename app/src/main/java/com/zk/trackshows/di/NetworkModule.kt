@@ -1,9 +1,9 @@
 package com.zk.trackshows.di
 
 import com.zk.trackshows.BuildConfig
-import com.zk.trackshows.repository.network.AuthInterceptor
-import com.zk.trackshows.repository.network.api.TvShowsService
-import com.zk.trackshows.repository.network.model.ShowDtoMapper
+import com.zk.trackshows.data.network.AuthInterceptor
+import com.zk.trackshows.data.network.api.TvShowsService
+import com.zk.trackshows.data.network.model.ShowDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

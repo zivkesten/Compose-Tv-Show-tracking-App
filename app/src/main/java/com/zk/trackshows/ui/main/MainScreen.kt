@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.zk.trackshows.R
 import com.zk.trackshows.common.InfoLogger
-import com.zk.trackshows.repository.network.api.TvShowsService
+import com.zk.trackshows.data.network.api.TvShowsService
 import com.zk.trackshows.ui.mainScreens.DiscoverScreen
 import com.zk.trackshows.ui.mainScreens.WatchList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +33,7 @@ sealed class BottomNavigationScreens(val route: String, @StringRes val resourceI
 @ExperimentalCoroutinesApi
 @ExperimentalAnimationApi
 @Composable
-fun MainScreen(viewModel: MainViewModel, service: TvShowsService) {
+fun MainScreen(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomNavigationScreens.WatchList,
@@ -49,7 +49,7 @@ fun MainScreen(viewModel: MainViewModel, service: TvShowsService) {
         floatingActionButton = { TrackShowsFloatingActionButton(navController) },
         floatingActionButtonPosition = FabPosition.End
     ) {
-        MainScreenNavigationConfigurations(navController, viewModel, service)
+        MainScreenNavigationConfigurations(navController, viewModel)
     }
 }
 
@@ -59,15 +59,14 @@ fun MainScreen(viewModel: MainViewModel, service: TvShowsService) {
 @Composable
 private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
-    viewModel: MainViewModel,
-    service: TvShowsService
+    viewModel: MainViewModel
 ) {
     NavHost(navController, startDestination = BottomNavigationScreens.Discover.route) {
         composable(BottomNavigationScreens.WatchList.route) {
             WatchList(viewModel)
         }
         composable(BottomNavigationScreens.Discover.route) {
-            DiscoverScreen(viewModel, service)
+            DiscoverScreen(viewModel)
         }
     }
 }

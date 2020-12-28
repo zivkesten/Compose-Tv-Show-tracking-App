@@ -29,7 +29,9 @@ import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @ExperimentalAnimationApi
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -59,6 +61,7 @@ fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
         )
     }
 }
+@InternalCoroutinesApi
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
