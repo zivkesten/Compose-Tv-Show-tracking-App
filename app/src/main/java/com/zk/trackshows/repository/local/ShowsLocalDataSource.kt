@@ -58,8 +58,8 @@ class ShowsLocalDataSource internal constructor(
         popularShowsDao.deleteShows()
     }
 
-    override suspend fun cachePopularShows(shows: List<PopularShow>) {
-        popularShowsDao.insertAll(shows)
+    override suspend fun cachePopularShows(shows: List<PopularShow>): List<Long> {
+        return popularShowsDao.insertAll(shows)
     }
 
     override suspend fun clearTopRatedShowsCache() {

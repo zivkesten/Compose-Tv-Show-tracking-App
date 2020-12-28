@@ -16,6 +16,6 @@ data class WatchedShow(
     val show: ShowEntity,
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "WatchedShowId") val id: Int? = 0
+    @ColumnInfo(name = "WatchedShowId") val id: Int = show.id
 
 ): Parcelable

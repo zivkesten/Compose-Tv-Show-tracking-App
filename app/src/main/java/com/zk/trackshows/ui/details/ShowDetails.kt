@@ -1,6 +1,7 @@
 package com.zk.trackshows.ui.details
 
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollableColumn
@@ -29,6 +30,7 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
+@ExperimentalAnimationApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Composable
@@ -57,6 +59,7 @@ fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
         )
     }
 }
+@ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
 fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {

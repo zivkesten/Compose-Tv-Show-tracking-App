@@ -22,7 +22,7 @@ interface LocalDataSource {
 
     suspend fun clearTopRatedShowsCache()
 
-    suspend fun cachePopularShows(shows: List<PopularShow>)
+    suspend fun cachePopularShows(shows: List<PopularShow>): List<Long>
 
     suspend fun cacheTopRatedShows(shows: List<TopRatedShow>)
 

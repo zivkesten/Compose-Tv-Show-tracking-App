@@ -19,7 +19,7 @@ interface PopularShowsDao {
     fun popularShowsPagingSource(): PagingSource<Int, PopularShow>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(repos: List<PopularShow>)
+    suspend fun insertAll(shows: List<PopularShow>): List<Long>
 
     @Query("DELETE FROM PopularShow")
     suspend fun deleteShows()

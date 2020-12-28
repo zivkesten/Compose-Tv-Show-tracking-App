@@ -34,7 +34,7 @@ import kotlinx.coroutines.FlowPreview
 fun DiscoverScreen(viewModel: MainViewModel, service: TvShowsService) {
 
     AnimatedBottomNavigationTransition(
-        enter = /*bottomNavigationEnterTransitions()*/fadeIn(),
+        enter = /*bottomNavigationEnterTransitions()*/fadeIn(initialAlpha = 0.3f),
         exit = fadeOut()
     ) {
         DiscoverScreenContent(viewModel, service)
@@ -64,7 +64,8 @@ private fun DiscoverScreenContent(
             LazyPagingRowWithPagingData(
                 title = "Popular shows",
                 viewModel::tapShowEvent,
-                viewModel.popularShowsPagedData)
+                viewModel.popularShowsPagedData
+            )
         }
     }
 }

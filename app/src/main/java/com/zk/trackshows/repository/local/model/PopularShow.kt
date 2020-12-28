@@ -17,6 +17,6 @@ data class PopularShow(
     val show: ShowEntity,
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "popularShowId") val id: Int? = 0
+    @ColumnInfo(name = "popularShowId") val id: Int = show.id
 ) : Parcelable
 

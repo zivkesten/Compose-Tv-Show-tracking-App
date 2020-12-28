@@ -34,7 +34,7 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun WatchList(viewModel: MainViewModel) {
     AnimatedBottomNavigationTransition(
-        enter = /*bottomNavigationEnterTransitions()*/fadeIn(),
+        enter = /*bottomNavigationEnterTransitions()*/fadeIn(initialAlpha = 0.3f),
         exit = fadeOut()
     ) {
         WatchListContent(viewModel)
