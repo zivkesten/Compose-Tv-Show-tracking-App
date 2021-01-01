@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.zk.trackshows.data.local.model.PopularShow
+import com.zk.trackshows.data.local.model.TrendingShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -13,15 +13,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 @ExperimentalCoroutinesApi
 @Dao
-interface PopularShowsDao {
+interface TrendingShowsDao {
 
-    @Query("SELECT * FROM PopularShow ")
-    fun popularShowsPagingSource(): PagingSource<Int, PopularShow>
+    @Query("SELECT * FROM TrendingShow ")
+    fun trendingPagingSource(): PagingSource<Int, TrendingShow>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(shows: List<PopularShow>)
+    suspend fun insertAll(shows: List<TrendingShow>)
 
-    @Query("DELETE FROM PopularShow")
+    @Query("DELETE FROM TrendingShow")
     suspend fun deleteShows()
 
 }

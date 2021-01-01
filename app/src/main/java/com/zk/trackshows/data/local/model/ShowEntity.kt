@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @Immutable
 @Parcelize
-data class ShowEntity(
+open class ShowEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "backdrop_path") val backdrop_path: String? = null,

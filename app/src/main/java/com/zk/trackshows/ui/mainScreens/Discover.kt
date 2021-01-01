@@ -59,6 +59,11 @@ private fun DiscoverScreenContent(
                 viewModel::tapShowEvent,
                 viewModel.popularShowsPagedData
             )
+            LazyPagingRowWithPagingData(
+                title = "Trending Shows",
+                viewModel::tapShowEvent,
+                viewModel.trendingShowsPagedData
+            )
         }
     }
 }

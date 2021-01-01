@@ -22,27 +22,31 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
-import com.zk.trackshows.data.local.model.TopRatedShow
+import com.zk.trackshows.data.local.model.ShowEntity
+import com.zk.trackshows.data.network.api.TvShowResponse
 import com.zk.trackshows.data.network.model.ShowDtoMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 private const val STARTING_PAGE_INDEX = 1
 
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi
-class TopRatedRemoteMediator(
-    val dataBaseDiscoverShows: DiscoverShowsLocalDataSource,
-    val service: RemoteDataSource,
+class DiscoverShowsRemoteMediator @Inject constructor(
     private val dtoMapper: ShowDtoMapper,
-    private val entityMapper: ShowEntityMapper
-) : RemoteMediator<Int, TopRatedShow>() {
+    private val entityMapper: ShowEntityMapper,
+    private val apiRequest: suspend (page: Int) -> TvShowResponse,
+    private val clearCache: suspend () -> Unit,
+    private val cacheData: suspend (List<ShowEntity>) -> Unit,
+    private val mapToEntity: (ShowEntity) -> Any
+) : RemoteMediator<Int, ShowEntity>() {
 
     private var page: Int = STARTING_PAGE_INDEX
 
     @ExperimentalCoroutinesApi
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, TopRatedShow>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, ShowEntity>): MediatorResult {
         page = when (loadType) {
             LoadType.REFRESH -> { STARTING_PAGE_INDEX }
             LoadType.PREPEND -> {
@@ -56,7 +60,7 @@ class TopRatedRemoteMediator(
         }
         try {
             Log.w("Zivi", "service.getPagedPopularShows($page)")
-            val apiResponse = service.fetchPagedTopRatedShows(page)
+            val apiResponse = apiRequest.invoke(page)
 
                     page = apiResponse.page
                     val shows = apiResponse.shows
@@ -64,14 +68,15 @@ class TopRatedRemoteMediator(
                     val endOfPaginationReached = shows.isEmpty()
                     if (loadType == LoadType.REFRESH) {
                         Log.w("Zivi", "deleteAllShows")
-                        dataBaseDiscoverShows.clearTopRatedShowsCache()
+                        clearCache.invoke()
                     }
 
                     shows.let { showDtos ->
                         Log.w("Zivi", "cacheShows")
                         val domainModels = dtoMapper.toDomainList(showDtos)
                         val entities = entityMapper.fromDomainList(domainModels)
-                        dataBaseDiscoverShows.cacheTopRatedShows(entities.map { TopRatedShow(it) })
+                        val trs = entities.map { mapToEntity.invoke(it) }
+                        cacheData.invoke(trs as List<ShowEntity>)
                     }
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

@@ -7,6 +7,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.nio.file.Watchable
 
 @Entity
 @Immutable
@@ -18,4 +19,8 @@ data class WatchedShow(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "WatchedShowId") val id: Int = show.id
 
-): Parcelable
+): Parcelable, DataBaseShow {
+    override fun entity(): ShowEntity {
+        return show
+    }
+}

@@ -49,7 +49,7 @@ fun WatchListContent(
     viewModel: MainViewModel,
 ) {
     viewModel.onEvent(MainScreenEvent.ScreenLoad)
-    val watchListState = viewModel.watchedShows.collectAsState().value
+    val watchListState = viewModel.watchListState.collectAsState().value
 
     logMessage("watchListState.watchedShows: ${watchListState.watchedShows?.size}")
     watchListState.loading?.let { loading -> if (loading) CircularProgressIndicator() }

@@ -1,5 +1,6 @@
 package com.zk.trackshows.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -63,7 +65,7 @@ private fun PagingRow(
         //logMessage("lazyPagingItems: ${lazyPagingItems.itemCount}")
         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
             item {
-                CircularProgressIndicator()
+                PlaceHolder()
             }
         }
         items(lazyPagingItems) { show ->
@@ -77,18 +79,27 @@ private fun PagingRow(
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = { tapAction.invoke(show) }),
                     contentScale = ContentScale.Crop,
-                    loading = { CircularProgressIndicator() }
+                    loading = { PlaceHolder() },
+                    fadeIn = true
                 )
             }
         }
 
         if (lazyPagingItems.loadState.append == LoadState.Loading) {
             item {
-                CircularProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
-                        .wrapContentHeight(Alignment.CenterVertically)
-                )
+                PlaceHolder()
             }
         }
     }
+}
+
+@Composable
+private fun PlaceHolder() {
+    Box(modifier = Modifier
+        .preferredWidth(190.dp)
+        .preferredHeight(300.dp)
+        .padding(12.dp)
+        .clip(RoundedCornerShape(12.dp))
+        .background(color = Color.LightGray)
+    )
 }

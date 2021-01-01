@@ -12,14 +12,13 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @Immutable
 @Parcelize
-data class PopularShow(
+data class TrendingShow(
     @Embedded
     val show: ShowEntity,
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "popularShowId") val id: Int = show.id
+    @ColumnInfo(name = "trendingShowId") val id: Int = show.id
 ) : Parcelable, DataBaseShow {
-
     override fun entity(): ShowEntity {
         return show
     }

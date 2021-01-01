@@ -1,9 +1,13 @@
-package com.zk.trackshows.data.local.model
+package com.zk.trackshows.data.local.mapper
 
+import com.zk.trackshows.data.local.model.PopularShow
+import com.zk.trackshows.data.local.model.ShowEntity
+import com.zk.trackshows.data.local.model.TopRatedShow
+import com.zk.trackshows.data.local.model.TrendingShow
 import com.zk.trackshows.domain.mapper.DomainMapper
 import com.zk.trackshows.domain.model.Show
 
-class ShowEntityMapper : DomainMapper<ShowEntity, Show> {
+class ShowEntityMapper: DomainMapper<ShowEntity, Show> {
 
     override fun mapToDomainModel(model: ShowEntity): Show {
         return Show(
@@ -34,10 +38,10 @@ class ShowEntityMapper : DomainMapper<ShowEntity, Show> {
             original_language = domainModel.original_language,
             original_name = domainModel.original_name,
             overview = domainModel.overview,
-            popularity = domainModel.popularity,
+            popularity = domainModel.popularity ?: 0.0,
             poster_path = domainModel.poster_path,
-            vote_average = domainModel.vote_average,
-            vote_count= domainModel.vote_count
+            vote_average = domainModel.vote_average ?: 0.0,
+            vote_count= domainModel.vote_count?: 0
         )
     }
 

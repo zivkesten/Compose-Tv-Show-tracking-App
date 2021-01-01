@@ -15,12 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VisibilityAnimationFAB(bool: Boolean, action: () -> Unit) {
     var expanded by remember(bool) { mutableStateOf(false) }
-    Log.v("Zivi", "in watch list: $bool")
-    Log.v("Zivi", "expanded: $expanded")
     FloatingActionButton(
         onClick = {
             action.invoke()

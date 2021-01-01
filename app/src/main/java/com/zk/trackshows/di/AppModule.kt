@@ -21,12 +21,14 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import coil.ImageLoader
 import coil.util.CoilUtils
-import com.zk.trackshows.data.LocalDataSource
+import com.zk.trackshows.data.DiscoverShowsLocalDataSource
 import com.zk.trackshows.data.RemoteDataSource
+import com.zk.trackshows.data.WatchListLocalDataSource
+import com.zk.trackshows.data.local.DiscoverShowsLocalDataSourceImpl
 import com.zk.trackshows.data.local.ShowsDatabase
-import com.zk.trackshows.data.local.ShowsLocalDataSource
+import com.zk.trackshows.data.local.WatchListLocalDataSourceImpl
 import com.zk.trackshows.data.local.dao.PopularShowsDao
-import com.zk.trackshows.data.local.model.ShowEntityMapper
+import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.network.ShowsRemoteDataSource
 import com.zk.trackshows.data.network.api.TvShowsService
 import com.zk.trackshows.data.network.model.ShowDtoMapper
@@ -65,11 +67,22 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideLocalDataSource(
+    fun provideDiscoverShowsLocalDataSource(
         database: ShowsDatabase,
-    ): LocalDataSource {
-        return ShowsLocalDataSource(
-            database.watchListDao(), database.popularShowsDao(), database.topRatedShowsDao()
+    ): DiscoverShowsLocalDataSource {
+        return DiscoverShowsLocalDataSourceImpl(
+            database.popularShowsDao(), database.topRatedShowsDao(), database.TrendingShowsDao()
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideWatchListLocalDataSource(
+        database: ShowsDatabase,
+        entityMapper: ShowEntityMapper
+    ): WatchListLocalDataSource {
+        return WatchListLocalDataSourceImpl(
+            database.watchListDao(), entityMapper
         )
     }
 
@@ -123,10 +136,10 @@ object RepositoriesModule {
     @Singleton
     @Provides
     fun provideShowsRepository(
-        localDataSource: LocalDataSource,
+        watchListLocalDataSource: WatchListLocalDataSource,
     ): WatchListRepository {
         return WatchListRepositoryImpl(
-            localDataSource
+            watchListLocalDataSource
         )
     }
 
@@ -134,12 +147,12 @@ object RepositoriesModule {
     @Provides
     fun provideDiscoverShowsRepository(
         remoteDataSource: RemoteDataSource,
-        localDataSource: LocalDataSource,
+        discoverShowsLocalDataSource: DiscoverShowsLocalDataSource,
         dtoMapper: ShowDtoMapper,
         entityMapper: ShowEntityMapper
     ): DiscoverShowsRepository {
         return DiscoverShowsRepositoryImpl(
-            remoteDataSource, localDataSource, dtoMapper, entityMapper
+            remoteDataSource, discoverShowsLocalDataSource, dtoMapper, entityMapper
         )
     }
 }

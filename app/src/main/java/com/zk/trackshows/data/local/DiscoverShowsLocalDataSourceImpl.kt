@@ -16,31 +16,25 @@
 package com.zk.trackshows.data.local
 
 import androidx.paging.PagingSource
-import com.zk.trackshows.data.LocalDataSource
+import com.zk.trackshows.data.DiscoverShowsLocalDataSource
 import com.zk.trackshows.data.local.dao.PopularShowsDao
 import com.zk.trackshows.data.local.dao.TopRatedShowsDao
-import com.zk.trackshows.data.local.dao.WatchListDao
+import com.zk.trackshows.data.local.dao.TrendingShowsDao
 import com.zk.trackshows.data.local.model.PopularShow
 import com.zk.trackshows.data.local.model.TopRatedShow
-import com.zk.trackshows.data.local.model.WatchedShow
+import com.zk.trackshows.data.local.model.TrendingShow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 /**
  * Concrete implementation of a data source as a db.
  */
 @ExperimentalCoroutinesApi
-class ShowsLocalDataSource internal constructor(
-    private val watchListDao: WatchListDao,
+class DiscoverShowsLocalDataSourceImpl internal constructor(
     private val popularShowsDao: PopularShowsDao,
-    private val topRatedShowsDao: TopRatedShowsDao
-) : LocalDataSource {
+    private val topRatedShowsDao: TopRatedShowsDao,
+    private val trendingShowsDao: TrendingShowsDao
 
-    override suspend fun observeWatchedShows(): Flow<List<WatchedShow>> {
-        val watchShows = watchListDao.getShows()
-        return flow { emit(watchShows) }
-    }
+    ) : DiscoverShowsLocalDataSource {
 
     override fun observePagedPopularShows(): PagingSource<Int, PopularShow> {
         return popularShowsDao.popularShowsPagingSource()
@@ -50,19 +44,19 @@ class ShowsLocalDataSource internal constructor(
         return topRatedShowsDao.topRatedPagingSource()
     }
 
-    override suspend fun addToWatchList(show: WatchedShow) {
-        watchListDao.insertShow(show)
-    }
-
-    override suspend fun removeFromWatchList(showId: Int) {
-        watchListDao.deleteShow(showId)
+    override fun observePagedTrendingShows(): PagingSource<Int, TrendingShow> {
+        return trendingShowsDao.trendingPagingSource()
     }
 
     override suspend fun clearPopularShowsCache() {
         popularShowsDao.deleteShows()
     }
 
-    override suspend fun cachePopularShows(shows: List<PopularShow>): List<Long> {
+    override suspend fun clearTrendingShowsCache() {
+        trendingShowsDao.deleteShows()
+    }
+
+    override suspend fun cachePopularShows(shows: List<PopularShow>) {
         return popularShowsDao.insertAll(shows)
     }
 
@@ -74,6 +68,9 @@ class ShowsLocalDataSource internal constructor(
         topRatedShowsDao.insertAll(shows)
     }
 
+    override suspend fun cacheTrendingShows(shows: List<TrendingShow>) {
+        trendingShowsDao.insertAll(shows)
+    }
 }
 
 

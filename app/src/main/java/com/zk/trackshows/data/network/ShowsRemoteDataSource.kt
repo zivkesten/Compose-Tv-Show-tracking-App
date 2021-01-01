@@ -33,7 +33,11 @@ class ShowsRemoteDataSource internal  constructor(
         return service.fetchPagedPopularShows(page)
     }
 
-    override suspend fun fetchTopRatedShows(page: Int): TvShowResponse {
+    override suspend fun fetchPagedTopRatedShows(page: Int): TvShowResponse {
         return service.fetchPagedTopRatedShows(page)
+    }
+
+    override suspend fun fetchPagedTrendingShows(page: Int): TvShowResponse {
+        return service.fetchPagedTrendingTVShows(page)
     }
 }

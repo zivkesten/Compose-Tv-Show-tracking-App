@@ -10,14 +10,8 @@ import androidx.compose.ui.platform.setContent
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.theme.TrackShowsTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.InternalCoroutinesApi
 
 @ExperimentalAnimationApi
-@FlowPreview
-@ExperimentalCoroutinesApi
-@InternalCoroutinesApi
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 

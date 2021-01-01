@@ -18,11 +18,11 @@ interface WatchListDao {
     @Query("SELECT * FROM WatchedShow")
     fun observeShows(): Flow<List<WatchedShow>>
 
-    @Query("SELECT * FROM WatchedShow")
-    suspend fun getShows(): List<WatchedShow>
-
     @Query("SELECT * FROM WatchedShow WHERE id = :showId")
     fun observeShow(showId: Int): Flow<WatchedShow>
+
+    @Query("SELECT * FROM WatchedShow")
+    fun getShows(): List<WatchedShow>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(shows: List<WatchedShow>)

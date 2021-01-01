@@ -1,6 +1,5 @@
 package com.zk.trackshows.ui.main
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +8,11 @@ import androidx.paging.map
 import com.zk.trackshows.AppScreens
 import com.zk.trackshows.common.InfoLogger.logMessage
 import com.zk.trackshows.data.local.model.PopularShow
-import com.zk.trackshows.data.local.model.ShowEntityMapper
+import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.repositories.DiscoverShowsRepository
 import com.zk.trackshows.data.repositories.WatchListRepository
 import com.zk.trackshows.domain.model.Show
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -34,36 +34,25 @@ sealed class MainScreenEvent {
 @ExperimentalCoroutinesApi
 class MainViewModel @ViewModelInject constructor(
     private val watchListRepository: WatchListRepository,
-    private val discoverShowsRepository: DiscoverShowsRepository,
-    private val entityMapper: ShowEntityMapper
+    discoverShowsRepository: DiscoverShowsRepository,
 ) : ViewModel() {
 
     private val _navigationEvent = MutableStateFlow<AppScreens>(AppScreens.MainScreen)
 
     val navigationEvent: MutableStateFlow<AppScreens> get() = _navigationEvent
 
-    private val _watchedShows = MutableStateFlow(WatchListState(loading = true))
+    private val _watchListState = MutableStateFlow(WatchListState(loading = true))
 
-    val watchedShows: StateFlow<WatchListState> get() = _watchedShows
+    val watchListState: StateFlow<WatchListState> get() = _watchListState
 
-    // This flow originates from a PopularShow stream and mapped to Show
-    val popularShowsPagedData: Flow<PagingData<Show>> =
-        discoverShowsRepository.popularShowsPagingData(true)
-            .map { pagingData -> pagingData.map { popularShow ->
-                        entityMapper.mapToDomainModel(popularShow.show)
-                    }
-            }
+    val popularShowsPagedData: Flow<PagingData<Show>> = discoverShowsRepository.popularShowsPagingData()
 
-    // This flow originates from a TopReted stream and mapped to Show
-    val topRatedShowsPagedData: Flow<PagingData<Show>> =
-        discoverShowsRepository.popularShowsPagingData(true)
-            .map { pagingData -> pagingData.map { popularShow ->
-                entityMapper.mapToDomainModel(popularShow.show)
-            }
-            }
+    val topRatedShowsPagedData: Flow<PagingData<Show>> = discoverShowsRepository.topRatedShowsPagingData()
+
+    val trendingShowsPagedData: Flow<PagingData<Show>> = discoverShowsRepository.trendingShowsPagingData()
+
 
     fun tapShowEvent(show: Show) {
-        logMessage("currentShowList()?.first { it.id == showId  } is ${show.name}")
         _navigationEvent.value = AppScreens.Details(show)
     }
 
@@ -81,16 +70,12 @@ class MainViewModel @ViewModelInject constructor(
 
     private fun screenLoadToResult() {
         viewModelScope.launch {
-            Log.i("Zivi", "screenLoadToResult")
             watchListRepository.observeWatchList().collect { watchedShows ->
-                Log.v("Zivi", "observeWatchList: ${watchedShows.size}")
-                val entities = watchedShows.map { it.show }
-                val shows = entityMapper.toDomainList(entities)
-                _watchedShows.value =
-                    _watchedShows.value.copy(
+                _watchListState.value =
+                    _watchListState.value.copy(
                         loading = false,
                         error = null,
-                        watchedShows = shows
+                        watchedShows = watchedShows
                     )
             }
         }

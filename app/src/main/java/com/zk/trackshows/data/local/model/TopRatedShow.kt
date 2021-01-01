@@ -10,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 
 
 @Entity
-@Immutable
 @Parcelize
 data class TopRatedShow(
     @Embedded
@@ -18,5 +17,10 @@ data class TopRatedShow(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "topRatedShowId") val id: Int = show.id
-) : Parcelable
+) : Parcelable, DataBaseShow {
+
+    override fun entity(): ShowEntity {
+        return show
+    }
+}
 

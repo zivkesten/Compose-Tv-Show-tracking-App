@@ -16,13 +16,12 @@
 
 package com.zk.trackshows.data
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
-import com.zk.trackshows.data.local.model.TopRatedShow
+import com.zk.trackshows.data.local.model.TrendingShow
 import com.zk.trackshows.data.network.model.ShowDtoMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
@@ -32,17 +31,17 @@ private const val STARTING_PAGE_INDEX = 1
 
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi
-class TopRatedRemoteMediator(
+class TrendingShowsRemoteMediator(
     val dataBaseDiscoverShows: DiscoverShowsLocalDataSource,
     val service: RemoteDataSource,
     private val dtoMapper: ShowDtoMapper,
     private val entityMapper: ShowEntityMapper
-) : RemoteMediator<Int, TopRatedShow>() {
+) : RemoteMediator<Int, TrendingShow>() {
 
     private var page: Int = STARTING_PAGE_INDEX
 
     @ExperimentalCoroutinesApi
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, TopRatedShow>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, TrendingShow>): MediatorResult {
         page = when (loadType) {
             LoadType.REFRESH -> { STARTING_PAGE_INDEX }
             LoadType.PREPEND -> {
@@ -55,23 +54,20 @@ class TopRatedRemoteMediator(
             LoadType.APPEND -> { page + 1 }
         }
         try {
-            Log.w("Zivi", "service.getPagedPopularShows($page)")
-            val apiResponse = service.fetchPagedTopRatedShows(page)
+            val apiResponse = service.fetchPagedTrendingShows(page)
 
                     page = apiResponse.page
                     val shows = apiResponse.shows
 
                     val endOfPaginationReached = shows.isEmpty()
                     if (loadType == LoadType.REFRESH) {
-                        Log.w("Zivi", "deleteAllShows")
-                        dataBaseDiscoverShows.clearTopRatedShowsCache()
+                        dataBaseDiscoverShows.clearTrendingShowsCache()
                     }
 
                     shows.let { showDtos ->
-                        Log.w("Zivi", "cacheShows")
                         val domainModels = dtoMapper.toDomainList(showDtos)
                         val entities = entityMapper.fromDomainList(domainModels)
-                        dataBaseDiscoverShows.cacheTopRatedShows(entities.map { TopRatedShow(it) })
+                        dataBaseDiscoverShows.cacheTrendingShows(entities.map { TrendingShow(it)})
                     }
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

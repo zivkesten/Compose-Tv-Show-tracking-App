@@ -22,7 +22,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.zk.trackshows.data.local.model.PopularShow
-import com.zk.trackshows.data.local.model.ShowEntityMapper
+import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.network.model.ShowDtoMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
@@ -33,7 +33,7 @@ private const val STARTING_PAGE_INDEX = 1
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi
 class PopularShowsRemoteMediator(
-    val dataBase: LocalDataSource,
+    val dataBaseDiscoverShows: DiscoverShowsLocalDataSource,
     val service: RemoteDataSource,
     private val dtoMapper: ShowDtoMapper,
     private val entityMapper: ShowEntityMapper
@@ -64,14 +64,14 @@ class PopularShowsRemoteMediator(
                     val endOfPaginationReached = shows.isEmpty()
                     if (loadType == LoadType.REFRESH) {
                         Log.w("Zivi", "deleteAllShows")
-                        dataBase.clearPopularShowsCache()
+                        dataBaseDiscoverShows.clearPopularShowsCache()
                     }
 
                     shows.let { showDtos ->
                         Log.w("Zivi", "cacheShows")
                         val domainModels = dtoMapper.toDomainList(showDtos)
                         val entities = entityMapper.fromDomainList(domainModels)
-                        dataBase.cachePopularShows(entities.map { PopularShow(it) })
+                        dataBaseDiscoverShows.cachePopularShows(entities.map { PopularShow(it) })
                     }
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
