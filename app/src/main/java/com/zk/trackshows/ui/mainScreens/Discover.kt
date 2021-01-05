@@ -20,7 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.AnimatedBottomNavigationTransition
-import com.zk.trackshows.components.LazyPagingRowWithPagingData
+import com.zk.trackshows.ui.components.LazyPagingRowWithPagingData
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

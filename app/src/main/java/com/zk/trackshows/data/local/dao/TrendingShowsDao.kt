@@ -18,6 +18,9 @@ interface TrendingShowsDao {
     @Query("SELECT * FROM TrendingShow ")
     fun trendingPagingSource(): PagingSource<Int, TrendingShow>
 
+    @Query("SELECT * FROM TrendingShow ")
+    fun trendingShows(): List<TrendingShow>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(shows: List<TrendingShow>)
 

@@ -2,10 +2,7 @@ package com.zk.trackshows.utils
 
 import androidx.paging.PagingData
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
-import com.zk.trackshows.data.local.model.PopularShow
-import com.zk.trackshows.data.local.model.TopRatedShow
-import com.zk.trackshows.data.local.model.TrendingShow
-import com.zk.trackshows.data.local.model.WatchedShow
+import com.zk.trackshows.data.local.model.*
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.details.DetailScreenState
 import com.zk.trackshows.ui.main.WatchListState
@@ -25,6 +22,8 @@ val initialDetailScreenState = DetailScreenState()
 
 
 fun mockShow(id: Int) =  Show(id, name = "Mock Show $id")
+
+fun mockShowEntity(id: Int) =  entityMapper.mapFromDomainModel(mockShow(id))
 
 fun mockWatchedShow(id: Int) = WatchedShow(entityMapper.mapFromDomainModel(mockShow(id)))
 

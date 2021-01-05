@@ -17,9 +17,9 @@ package com.zk.trackshows.data.local
 
 import com.zk.trackshows.data.WatchListLocalDataSource
 import com.zk.trackshows.data.local.dao.WatchListDao
-import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.local.model.ShowEntity
 import com.zk.trackshows.data.local.model.WatchedShow
+import com.zk.trackshows.domain.mapper.DomainMapper
 import com.zk.trackshows.domain.model.Show
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 class WatchListLocalDataSourceImpl internal constructor(
     private val watchListDao: WatchListDao,
-    private val entityMapper: ShowEntityMapper
+    private val entityMapper: DomainMapper<ShowEntity, Show>
 ): WatchListLocalDataSource {
 
     override suspend fun observeWatchedShows(): Flow<List<Show>> {
@@ -50,7 +50,7 @@ class WatchListLocalDataSourceImpl internal constructor(
         watchListDao.deleteShow(showId)
     }
 
-    private fun Flow<List<WatchedShow>>.mapWatchShowListFlowToShowListFlow(entityMapper: ShowEntityMapper): Flow<List<Show>> {
+    private fun Flow<List<WatchedShow>>.mapWatchShowListFlowToShowListFlow(entityMapper: DomainMapper<ShowEntity, Show>): Flow<List<Show>> {
         return this.mapToShowEntityList().map { showEntities -> entityMapper.toDomainList(showEntities) }
     }
 
@@ -58,7 +58,7 @@ class WatchListLocalDataSourceImpl internal constructor(
         return this.map { it.map { watchedShow -> watchedShow.show } }
     }
 
-    private fun List<WatchedShow>.mapWatchShowListToShowList(entityMapper: ShowEntityMapper): List<Show> {
+    private fun List<WatchedShow>.mapWatchShowListToShowList(entityMapper: DomainMapper<ShowEntity, Show>): List<Show> {
         return mapWatchedShowToShowEntity().map { showEntity -> entityMapper.mapToDomainModel(showEntity) }
     }
 

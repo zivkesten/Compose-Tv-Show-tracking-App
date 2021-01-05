@@ -71,7 +71,7 @@ object AppModule {
         database: ShowsDatabase,
     ): DiscoverShowsLocalDataSource {
         return DiscoverShowsLocalDataSourceImpl(
-            database.popularShowsDao(), database.topRatedShowsDao(), database.TrendingShowsDao()
+            database.popularShowsDao(), database.topRatedShowsDao(), database.trendingShowsDao()
         )
     }
 

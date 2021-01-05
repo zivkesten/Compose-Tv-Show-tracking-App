@@ -45,11 +45,11 @@ class ShowEntityMapper: DomainMapper<ShowEntity, Show> {
         )
     }
 
-    fun toDomainList(initial: List<ShowEntity>): List<Show>{
+    override fun toDomainList(initial: List<ShowEntity>): List<Show>{
         return initial.map { mapToDomainModel(it) }
     }
 
-    fun fromDomainList(initial: List<Show>): List<ShowEntity>{
+    override fun fromDomainList(initial: List<Show>): List<ShowEntity>{
         return initial.map { mapFromDomainModel(it) }
     }
 }

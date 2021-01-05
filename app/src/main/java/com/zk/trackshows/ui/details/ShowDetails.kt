@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.components.VisibilityAnimationFAB
+import com.zk.trackshows.ui.components.VisibilityAnimationFAB
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage

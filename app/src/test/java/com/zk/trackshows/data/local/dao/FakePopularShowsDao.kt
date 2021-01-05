@@ -8,6 +8,10 @@ class FakePopularShowsDao: PopularShowsDao {
         TODO("Not yet implemented")
     }
 
+    override fun popularShows(): List<PopularShow> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun insertAll(shows: List<PopularShow>) {
         TODO("Not yet implemented")
     }

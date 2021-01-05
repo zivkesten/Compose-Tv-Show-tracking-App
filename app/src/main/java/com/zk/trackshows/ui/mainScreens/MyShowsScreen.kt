@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.zk.trackshows.components.LazyPagingRowWithPagingData
+import com.zk.trackshows.ui.components.LazyPagingRowWithPagingData
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

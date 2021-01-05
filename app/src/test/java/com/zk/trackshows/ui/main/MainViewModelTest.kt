@@ -18,6 +18,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 
 @ExperimentalCoroutinesApi
@@ -57,7 +58,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun testTapSearchEmitSearchNavigationEvent() = mainCoroutineRule.testDispatcher.runBlockingTest {
+    fun tapSearch_emitSearchNavigationEvent() = mainCoroutineRule.testDispatcher.runBlockingTest {
         //on Event
         sut.tapSearch()
         //Collect
@@ -68,7 +69,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun testTapShowEmitShowDetailsNavigationEventWithCorrectShow() = mainCoroutineRule.testDispatcher.runBlockingTest {
+    fun tapShow_emitShowDetailsNavigationEventWithCorrectShow() = mainCoroutineRule.testDispatcher.runBlockingTest {
         //on Event
         val show = mockShow(1)
         sut.tapShowEvent(show)
@@ -80,7 +81,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun testInitialStateIsEmptyState() = mainCoroutineRule.testDispatcher.runBlockingTest {
+    fun initialState_emptyState() = mainCoroutineRule.testDispatcher.runBlockingTest {
         //Collect initial state
         val watchListState = sut.watchListState.value
         //Assert
@@ -88,7 +89,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun testOnScreenLoadEventStateShouldHaveShows() = mainCoroutineRule.testDispatcher.runBlockingTest {
+    fun onScreenLoad_eventStateShouldHaveShows() = mainCoroutineRule.testDispatcher.runBlockingTest {
 
         //Populate Watch list
         repeat(5) { count ->

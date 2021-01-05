@@ -41,13 +41,11 @@ class ShowDtoMapper : DomainMapper<ShowDto, Show> {
         )
     }
 
-    fun toDomainList(initial: List<ShowDto>): List<Show>{
+    override fun toDomainList(initial: List<ShowDto>): List<Show>{
         return initial.map { mapToDomainModel(it) }
     }
 
-    fun fromDomainList(initial: List<Show>): List<ShowDto>{
+    override fun fromDomainList(initial: List<Show>): List<ShowDto>{
         return initial.map { mapFromDomainModel(it) }
     }
-
-
 }

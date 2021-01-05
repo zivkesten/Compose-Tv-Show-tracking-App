@@ -18,6 +18,9 @@ interface TopRatedShowsDao {
     @Query("SELECT * FROM TopRatedShow ")
     fun topRatedPagingSource(): PagingSource<Int, TopRatedShow>
 
+    @Query("SELECT * FROM TopRatedShow ")
+    fun topRatedShows(): List<TopRatedShow>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(repos: List<TopRatedShow>)
 

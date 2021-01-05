@@ -25,5 +25,5 @@ abstract class ShowsDatabase : RoomDatabase() {
     abstract fun topRatedShowsDao(): TopRatedShowsDao
     abstract fun popularShowsDao(): PopularShowsDao
     abstract fun watchListDao(): WatchListDao
-    abstract fun TrendingShowsDao(): TrendingShowsDao
+    abstract fun trendingShowsDao(): TrendingShowsDao
 }

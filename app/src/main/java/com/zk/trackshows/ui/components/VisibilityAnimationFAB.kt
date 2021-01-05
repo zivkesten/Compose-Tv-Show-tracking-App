@@ -1,6 +1,5 @@
-package com.zk.trackshows.components
+package com.zk.trackshows.ui.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalAnimationApi::class)
+@ExperimentalAnimationApi
 @Composable
 fun VisibilityAnimationFAB(bool: Boolean, action: () -> Unit) {
     var expanded by remember(bool) { mutableStateOf(false) }

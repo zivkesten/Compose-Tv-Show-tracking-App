@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.AnimatedBottomNavigationTransition
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.components.ShowCard
+import com.zk.trackshows.ui.components.ShowCard
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.main.MainScreenEvent
 import com.zk.trackshows.ui.main.MainViewModel

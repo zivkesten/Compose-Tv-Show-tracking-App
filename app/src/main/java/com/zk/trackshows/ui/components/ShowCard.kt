@@ -1,4 +1,4 @@
-package com.zk.trackshows.components
+package com.zk.trackshows.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

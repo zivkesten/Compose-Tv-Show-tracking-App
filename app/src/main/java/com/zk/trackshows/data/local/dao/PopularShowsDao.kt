@@ -18,6 +18,9 @@ interface PopularShowsDao {
     @Query("SELECT * FROM PopularShow ")
     fun popularShowsPagingSource(): PagingSource<Int, PopularShow>
 
+    @Query("SELECT * FROM PopularShow ")
+    fun popularShows(): List<PopularShow>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(shows: List<PopularShow>)
 
