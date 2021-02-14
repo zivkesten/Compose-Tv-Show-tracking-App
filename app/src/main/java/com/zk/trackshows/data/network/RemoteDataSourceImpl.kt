@@ -25,7 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 
 @ExperimentalCoroutinesApi
-class ShowsRemoteDataSource internal  constructor(
+class RemoteDataSourceImpl internal  constructor(
     private val service: TvShowsService
 ): RemoteDataSource {
 
@@ -37,7 +37,7 @@ class ShowsRemoteDataSource internal  constructor(
         return service.fetchPagedTopRatedShows(page)
     }
 
-    override suspend fun fetchPagedTrendingShows(page: Int): TvShowResponse {
+    override suspend fun fetchPagedTrendingTVShows(page: Int): TvShowResponse {
         return service.fetchPagedTrendingTVShows(page)
     }
 }

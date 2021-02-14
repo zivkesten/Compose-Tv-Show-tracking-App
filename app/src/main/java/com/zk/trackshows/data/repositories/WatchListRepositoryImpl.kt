@@ -21,7 +21,7 @@ class WatchListRepositoryImpl (
         return watchListLocalDataSource.observeWatchedShows()
     }
 
-    override fun getWatchList(): List<Show> {
+    override suspend fun getWatchList(): List<Show> {
         return watchListLocalDataSource.getWatchList()
     }
 

@@ -2,9 +2,12 @@ package com.zk.trackshows.data.repositories
 
 import androidx.paging.*
 import com.zk.trackshows.data.*
+import com.zk.trackshows.data.DiscoverShowsLocalDataSource
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.local.model.*
-import com.zk.trackshows.data.network.model.ShowDtoMapper
+import com.zk.trackshows.data.network.mapper.ShowDtoMapper
+import com.zk.trackshows.data.network.model.ShowDto
+import com.zk.trackshows.domain.mapper.DomainMapper
 import com.zk.trackshows.domain.model.Show
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +18,8 @@ import kotlinx.coroutines.flow.map
 class DiscoverShowsRepositoryImpl (
     private val showsRemoteDataSource: RemoteDataSource,
     private val showsDiscoverShowsLocalDataSource: DiscoverShowsLocalDataSource,
-    private val dtoMapper: ShowDtoMapper,
-    private val entityMapper: ShowEntityMapper
+    private val dtoMapper: DomainMapper<ShowDto, Show>,
+    private val entityMapper: DomainMapper<ShowEntity, Show>
 ) : DiscoverShowsRepository {
 
     override fun popularShowsPagingData(): Flow<PagingData<Show>> {
@@ -61,7 +64,7 @@ class DiscoverShowsRepositoryImpl (
         ).flow.mapEntityListToShowList(entityMapper)
     }
 
-    private fun <T: DataBaseShow> Flow<PagingData<T>>.mapEntityListToShowList(entityMapper: ShowEntityMapper): Flow<PagingData<Show>> {
+    private fun <T: DataBaseShow> Flow<PagingData<T>>.mapEntityListToShowList(entityMapper: DomainMapper<ShowEntity, Show>): Flow<PagingData<Show>> {
         return this.mapToShowEntityList().map { entities -> entities.map { entity -> entityMapper.mapToDomainModel(entity) } }
     }
 

@@ -21,7 +21,7 @@ class FakeWatchListRepository: WatchListRepository {
         return watchedShowsStateFlow
     }
 
-    override fun getWatchList(): List<Show> {
+    override suspend fun getWatchList(): List<Show> {
         return watchedShowsStateFlow.value
     }
 

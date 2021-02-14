@@ -1,5 +1,6 @@
-package com.zk.trackshows.data.network.model
+package com.zk.trackshows.data.network.mapper
 
+import com.zk.trackshows.data.network.model.ShowDto
 import com.zk.trackshows.domain.mapper.DomainMapper
 import com.zk.trackshows.domain.model.Show
 

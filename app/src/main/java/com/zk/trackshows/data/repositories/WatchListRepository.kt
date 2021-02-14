@@ -12,7 +12,7 @@ interface WatchListRepository {
 
     suspend fun observeWatchList(): Flow<List<Show>>
 
-    fun getWatchList(): List<Show>
+    suspend fun getWatchList(): List<Show>
 
     suspend fun removeFromWatchList(showId: Int)
 

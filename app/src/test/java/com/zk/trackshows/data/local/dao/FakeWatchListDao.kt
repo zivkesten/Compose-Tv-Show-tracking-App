@@ -16,8 +16,8 @@ class FakeWatchListDao: WatchListDao {
         return flow { emit(mockWatchedShow(1)) }
     }
 
-    override fun getShows(): List<WatchedShow> {
-        return mockWatchedShows
+    override suspend fun getShows(): List<WatchedShow> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun insertAll(shows: List<WatchedShow>) {

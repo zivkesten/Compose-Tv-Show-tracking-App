@@ -1,6 +1,7 @@
 package com.zk.trackshows.ui.details
 
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollableColumn
@@ -28,6 +29,7 @@ import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.FlowPreview
 
+@ExperimentalAnimationApi
 @FlowPreview
 @Composable
 fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
@@ -55,11 +57,13 @@ fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
         )
     }
 }
+
+@ExperimentalAnimationApi
 @Composable
 fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
     val expand = remember { mutableStateOf(false) }
     val state = viewModel.detailScreenState.collectAsState().value
-    System.out.println("state $state")
+    println("state $state")
     //val viewModel: MainViewModel = viewModel()
     //var dominantColors = listOf(graySurface, Color.Black)
 

@@ -1,12 +1,10 @@
-package com.zk.trackshows.data.local.dao
+package com.zk.trackshows.data.local
 
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.zk.trackshows.data.WatchListLocalDataSource
-import com.zk.trackshows.data.local.ShowsDatabase
-import com.zk.trackshows.data.local.WatchListLocalDataSourceImpl
 import com.zk.trackshows.data.local.mapper.MockEntityMapper
 import com.zk.trackshows.data.local.model.ShowEntity
 import com.zk.trackshows.domain.mapper.DomainMapper

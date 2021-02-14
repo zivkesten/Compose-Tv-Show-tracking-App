@@ -24,7 +24,7 @@ import androidx.paging.RemoteMediator
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
 import com.zk.trackshows.data.local.model.ShowEntity
 import com.zk.trackshows.data.network.api.TvShowResponse
-import com.zk.trackshows.data.network.model.ShowDtoMapper
+import com.zk.trackshows.data.network.mapper.ShowDtoMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
 import java.io.IOException

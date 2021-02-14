@@ -21,8 +21,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
+import com.zk.trackshows.data.local.model.ShowEntity
 import com.zk.trackshows.data.local.model.TrendingShow
-import com.zk.trackshows.data.network.model.ShowDtoMapper
+import com.zk.trackshows.data.network.mapper.ShowDtoMapper
+import com.zk.trackshows.data.network.model.ShowDto
+import com.zk.trackshows.domain.mapper.DomainMapper
+import com.zk.trackshows.domain.model.Show
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
 import java.io.IOException
@@ -34,8 +38,8 @@ private const val STARTING_PAGE_INDEX = 1
 class TrendingShowsRemoteMediator(
     val dataBaseDiscoverShows: DiscoverShowsLocalDataSource,
     val service: RemoteDataSource,
-    private val dtoMapper: ShowDtoMapper,
-    private val entityMapper: ShowEntityMapper
+    private val dtoMapper: DomainMapper<ShowDto, Show>,
+    private val entityMapper: DomainMapper<ShowEntity, Show>
 ) : RemoteMediator<Int, TrendingShow>() {
 
     private var page: Int = STARTING_PAGE_INDEX
@@ -54,7 +58,7 @@ class TrendingShowsRemoteMediator(
             LoadType.APPEND -> { page + 1 }
         }
         try {
-            val apiResponse = service.fetchPagedTrendingShows(page)
+            val apiResponse = service.fetchPagedTrendingTVShows(page)
 
                     page = apiResponse.page
                     val shows = apiResponse.shows

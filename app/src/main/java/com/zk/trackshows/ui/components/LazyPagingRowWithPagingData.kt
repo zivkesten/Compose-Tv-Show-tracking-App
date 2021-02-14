@@ -17,6 +17,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.zk.trackshows.PulseAplphaPlaceHolder
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -63,7 +64,7 @@ private fun PagingRow(
         //logMessage("lazyPagingItems: ${lazyPagingItems.itemCount}")
         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
             item {
-                PlaceHolder()
+                PulseAplphaPlaceHolder()
             }
         }
         items(lazyPagingItems) { show ->
@@ -77,7 +78,7 @@ private fun PagingRow(
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = { tapAction.invoke(show) }),
                     contentScale = ContentScale.Crop,
-                    loading = { PlaceHolder() },
+                    loading = { PulseAplphaPlaceHolder() },
                     fadeIn = true
                 )
             }
@@ -85,7 +86,7 @@ private fun PagingRow(
 
         if (lazyPagingItems.loadState.append == LoadState.Loading) {
             item {
-                PlaceHolder()
+                PulseAplphaPlaceHolder()
             }
         }
     }

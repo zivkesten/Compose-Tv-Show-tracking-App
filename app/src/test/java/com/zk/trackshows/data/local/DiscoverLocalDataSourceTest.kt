@@ -1,12 +1,10 @@
-package com.zk.trackshows.data.local.dao
+package com.zk.trackshows.data.local
 
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.zk.trackshows.data.WatchListLocalDataSource
-import com.zk.trackshows.data.local.DiscoverShowsLocalDataSourceImpl
-import com.zk.trackshows.data.local.ShowsDatabase
 import com.zk.trackshows.utils.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asExecutor
@@ -62,6 +60,16 @@ class DiscoverLocalDataSourceTest {
     }
 
     // TODO: 05/01/2021 Find a way to test pagingSource
+
+//    @Test
+//    fun testPAgingSource() = testScope.runBlockingTest {
+//        testDatabase.popularShowsDao().insertAll(mockPopularShows)
+//        val actual = sut.observePagedPopularShows()
+//        val expected = MockPopularShowsPagingSource(mockPopularShows)
+//
+//        assertThat("Sdfv",actual == expected)
+//
+//    }
 
     @Test
     fun on_clearPopularShowsCache_database_should_be_empty() = testScope.runBlockingTest {

@@ -29,9 +29,9 @@ import com.zk.trackshows.data.local.ShowsDatabase
 import com.zk.trackshows.data.local.WatchListLocalDataSourceImpl
 import com.zk.trackshows.data.local.dao.PopularShowsDao
 import com.zk.trackshows.data.local.mapper.ShowEntityMapper
-import com.zk.trackshows.data.network.ShowsRemoteDataSource
+import com.zk.trackshows.data.network.RemoteDataSourceImpl
 import com.zk.trackshows.data.network.api.TvShowsService
-import com.zk.trackshows.data.network.model.ShowDtoMapper
+import com.zk.trackshows.data.network.mapper.ShowDtoMapper
 import com.zk.trackshows.data.repositories.DiscoverShowsRepository
 import com.zk.trackshows.data.repositories.DiscoverShowsRepositoryImpl
 import com.zk.trackshows.data.repositories.WatchListRepository
@@ -62,7 +62,7 @@ object AppModule {
     fun provideRemoteDataSource(
         service: TvShowsService
     ): RemoteDataSource {
-        return ShowsRemoteDataSource(service)
+        return RemoteDataSourceImpl(service)
     }
 
     @Singleton

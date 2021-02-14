@@ -13,6 +13,6 @@ interface RemoteDataSource {
 
     suspend fun fetchPagedTopRatedShows(@Query("page") page: Int): TvShowResponse
 
-    suspend fun fetchPagedTrendingShows(@Query("page") page: Int): TvShowResponse
+    suspend fun fetchPagedTrendingTVShows(@Query("page") page: Int): TvShowResponse
 
 }

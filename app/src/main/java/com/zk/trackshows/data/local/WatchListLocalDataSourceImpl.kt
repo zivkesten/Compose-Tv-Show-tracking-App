@@ -38,7 +38,7 @@ class WatchListLocalDataSourceImpl internal constructor(
         return watchListDao.observeShows().mapWatchShowListFlowToShowListFlow(entityMapper)
     }
 
-    override fun getWatchList(): List<Show> {
+    override suspend fun getWatchList(): List<Show> {
         return watchListDao.getShows().mapWatchShowListToShowList(entityMapper)
     }
 

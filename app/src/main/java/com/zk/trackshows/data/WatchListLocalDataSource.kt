@@ -10,7 +10,7 @@ interface WatchListLocalDataSource {
 
     suspend fun observeWatchedShows(): Flow<List<Show>>
 
-    fun getWatchList(): List<Show>
+    suspend fun getWatchList(): List<Show>
 
     suspend fun addToWatchList(show: Show)
 
