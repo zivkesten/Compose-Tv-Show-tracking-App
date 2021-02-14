@@ -6,7 +6,6 @@
 1. Kotlin
 1. MVVM
 1. Jetpack Compose
-1.
 1. Hilt
 1. Navigation Components
 1. Retrofit2
