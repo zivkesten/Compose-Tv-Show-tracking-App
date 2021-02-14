@@ -20,9 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.AnimatedBottomNavigationTransition
-import com.zk.trackshows.components.LazyPagingRow
-import com.zk.trackshows.components.LazyPagingRowWithPagingData
-import com.zk.trackshows.repository.network.api.TvShowsService
+import com.zk.trackshows.ui.components.LazyPagingRowWithPagingData
 import com.zk.trackshows.ui.main.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -31,13 +29,13 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Composable
-fun DiscoverScreen(viewModel: MainViewModel, service: TvShowsService) {
+fun DiscoverScreen(viewModel: MainViewModel) {
 
     AnimatedBottomNavigationTransition(
         enter = /*bottomNavigationEnterTransitions()*/fadeIn(initialAlpha = 0.3f),
         exit = fadeOut()
     ) {
-        DiscoverScreenContent(viewModel, service)
+        DiscoverScreenContent(viewModel)
     }
 }
 
@@ -46,30 +44,29 @@ fun DiscoverScreen(viewModel: MainViewModel, service: TvShowsService) {
 @FlowPreview
 @Composable
 private fun DiscoverScreenContent(
-    viewModel: MainViewModel,
-    service: TvShowsService,
+    viewModel: MainViewModel
 ) {
     ScrollableColumn {
         Column {
             SearchBox(viewModel::tapSearch)
-            LazyPagingRow(dataSource = service::fetchPagedTopRatedShows,
+            LazyPagingRowWithPagingData(
                 title = "Top Rated",
-                viewModel = viewModel)
-//                LazyPagingRow(dataSource = service::fetchPagedTrendingTVShows,
-//                    title = "Trending this week",
-//                    viewModel = viewModel)
-//                LazyPagingRow(dataSource = service::fetchPagedPopularShows,
-//                    title = "Popular shows",
-//                    viewModel = viewModel)
+                viewModel::tapShowEvent,
+                viewModel.topRatedShowsPagedData
+            )
             LazyPagingRowWithPagingData(
                 title = "Popular shows",
                 viewModel::tapShowEvent,
                 viewModel.popularShowsPagedData
             )
+            LazyPagingRowWithPagingData(
+                title = "Trending Shows",
+                viewModel::tapShowEvent,
+                viewModel.trendingShowsPagedData
+            )
         }
     }
 }
-
 
 @Composable
 fun SearchBox(tapSearch: () -> Unit) {

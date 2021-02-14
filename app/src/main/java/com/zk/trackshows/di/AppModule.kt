@@ -21,17 +21,21 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import coil.ImageLoader
 import coil.util.CoilUtils
-import com.zk.trackshows.repository.LocalDataSource
-import com.zk.trackshows.repository.RemoteDataSource
-import com.zk.trackshows.repository.ShowsRepository
-import com.zk.trackshows.repository.ShowsRepositoryImpl
-import com.zk.trackshows.repository.local.dao.PopularShowsDao
-import com.zk.trackshows.repository.local.ShowsDatabase
-import com.zk.trackshows.repository.local.ShowsLocalDataSource
-import com.zk.trackshows.repository.local.model.ShowEntityMapper
-import com.zk.trackshows.repository.network.ShowsRemoteDataSource
-import com.zk.trackshows.repository.network.api.TvShowsService
-import com.zk.trackshows.repository.network.model.ShowDtoMapper
+import com.zk.trackshows.data.DiscoverShowsLocalDataSource
+import com.zk.trackshows.data.RemoteDataSource
+import com.zk.trackshows.data.WatchListLocalDataSource
+import com.zk.trackshows.data.local.DiscoverShowsLocalDataSourceImpl
+import com.zk.trackshows.data.local.ShowsDatabase
+import com.zk.trackshows.data.local.WatchListLocalDataSourceImpl
+import com.zk.trackshows.data.local.dao.PopularShowsDao
+import com.zk.trackshows.data.local.mapper.ShowEntityMapper
+import com.zk.trackshows.data.network.RemoteDataSourceImpl
+import com.zk.trackshows.data.network.api.TvShowsService
+import com.zk.trackshows.data.network.mapper.ShowDtoMapper
+import com.zk.trackshows.data.repositories.DiscoverShowsRepository
+import com.zk.trackshows.data.repositories.DiscoverShowsRepositoryImpl
+import com.zk.trackshows.data.repositories.WatchListRepository
+import com.zk.trackshows.data.repositories.WatchListRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,9 +44,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
  * Module to tell Hilt how to provide instances of types that cannot be constructor-injected.
@@ -55,31 +57,32 @@ import kotlin.annotation.AnnotationRetention.RUNTIME
 @Module
 object AppModule {
 
-    @Qualifier
-    @Retention(RUNTIME)
-    annotation class RemoteTasksDataSource
-
-    @Qualifier
-    @Retention(RUNTIME)
-    annotation class LocalTasksDataSource
-
     @Singleton
-    @RemoteTasksDataSource
     @Provides
-    fun provideTasksRemoteDataSource(
+    fun provideRemoteDataSource(
         service: TvShowsService
     ): RemoteDataSource {
-        return ShowsRemoteDataSource(service)
+        return RemoteDataSourceImpl(service)
     }
 
     @Singleton
-    @LocalTasksDataSource
     @Provides
-    fun provideTasksLocalDataSource(
+    fun provideDiscoverShowsLocalDataSource(
         database: ShowsDatabase,
-    ): LocalDataSource {
-        return ShowsLocalDataSource(
-            database.watchListDao(), database.popularShowsDao(), database.topRatedShowsDao()
+    ): DiscoverShowsLocalDataSource {
+        return DiscoverShowsLocalDataSourceImpl(
+            database.popularShowsDao(), database.topRatedShowsDao(), database.trendingShowsDao()
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideWatchListLocalDataSource(
+        database: ShowsDatabase,
+        entityMapper: ShowEntityMapper
+    ): WatchListLocalDataSource {
+        return WatchListLocalDataSourceImpl(
+            database.watchListDao(), entityMapper
         )
     }
 
@@ -122,24 +125,34 @@ object AppModule {
 }
 
 /**
- * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
+ * The binding for repositories is on its own module so that we can replace it easily in tests.
  */
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi
 @Module
 @InstallIn(ApplicationComponent::class)
-object ShowsRepositoryModule {
+object RepositoriesModule {
 
     @Singleton
     @Provides
     fun provideShowsRepository(
-        @AppModule.RemoteTasksDataSource remoteTasksDataSource: RemoteDataSource,
-        @AppModule.LocalTasksDataSource localTasksDataSource: LocalDataSource,
+        watchListLocalDataSource: WatchListLocalDataSource,
+    ): WatchListRepository {
+        return WatchListRepositoryImpl(
+            watchListLocalDataSource
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDiscoverShowsRepository(
+        remoteDataSource: RemoteDataSource,
+        discoverShowsLocalDataSource: DiscoverShowsLocalDataSource,
         dtoMapper: ShowDtoMapper,
         entityMapper: ShowEntityMapper
-    ): ShowsRepository {
-        return ShowsRepositoryImpl(
-            remoteTasksDataSource, localTasksDataSource, dtoMapper, entityMapper
+    ): DiscoverShowsRepository {
+        return DiscoverShowsRepositoryImpl(
+            remoteDataSource, discoverShowsLocalDataSource, dtoMapper, entityMapper
         )
     }
 }

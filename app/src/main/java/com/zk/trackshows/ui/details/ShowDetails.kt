@@ -23,16 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zk.trackshows.common.InfoLogger.logMessage
-import com.zk.trackshows.components.VisibilityAnimationFAB
+import com.zk.trackshows.ui.components.VisibilityAnimationFAB
 import com.zk.trackshows.domain.model.Show
 import com.zk.trackshows.ui.theme.typography
 import dev.chrisbanes.accompanist.coil.CoilImage
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 @ExperimentalAnimationApi
 @FlowPreview
-@ExperimentalCoroutinesApi
 @Composable
 fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
 
@@ -59,12 +57,13 @@ fun ShowDetails(viewModel: DetailViewModel, show: Show?) {
         )
     }
 }
+
 @ExperimentalAnimationApi
-@ExperimentalCoroutinesApi
 @Composable
 fun ShowDetailContent(viewModel: DetailViewModel, show: Show?) {
     val expand = remember { mutableStateOf(false) }
     val state = viewModel.detailScreenState.collectAsState().value
+    println("state $state")
     //val viewModel: MainViewModel = viewModel()
     //var dominantColors = listOf(graySurface, Color.Black)
 

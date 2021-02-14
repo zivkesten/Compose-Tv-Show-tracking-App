@@ -10,8 +10,8 @@ import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.lifecycleScope
 import com.zk.trackshows.AppScreens
 import com.zk.trackshows.common.InfoLogger.logMessage
+import com.zk.trackshows.data.network.api.TvShowsService
 import com.zk.trackshows.domain.model.Show
-import com.zk.trackshows.repository.network.api.TvShowsService
 import com.zk.trackshows.ui.details.DetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
     @VisibleForTesting
     private val viewModel: MainViewModel by viewModels()
 
-    @Inject lateinit var service: TvShowsService
-
     @InternalCoroutinesApi
     @FlowPreview
     @ExperimentalAnimationApi
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MaterialTheme {
-                MainScreen(viewModel = viewModel, service = service)
+                MainScreen(viewModel = viewModel)
             }
         }
 
