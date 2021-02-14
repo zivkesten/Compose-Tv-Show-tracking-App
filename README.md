@@ -17,3 +17,4 @@
 1. https://github.com/android/compose-samples
 1. https://developer.android.com/jetpack/compose
 1. https://developer.android.com/jetpack/compose/state
+1. https://github.com/mitchtabian/MVVMRecipeApp
